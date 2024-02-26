@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Entity
 @AllArgsConstructor
@@ -31,6 +34,25 @@ public class User {
     @Size(min = 2, max = 30, message = "Last name should not be empty")
     private String lastName;
 
+    @Column(name = "password", length = 1000)
+    private String password;
 
+    @OneToOne(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true, optional = true)
+    private UserImage image;
+
+    @Column(name = "date_of_created")
+    private LocalDateTime dateOfCreated;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            mappedBy = "user")
+    private List<Review> reviews;
+
+
+    @PrePersist
+    public void init(){
+        this.dateOfCreated = LocalDateTime.now();
+    }
 
 }
