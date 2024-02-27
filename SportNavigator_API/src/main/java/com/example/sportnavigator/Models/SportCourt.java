@@ -32,7 +32,7 @@ public class SportCourt {
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
             mappedBy = "sportCourt")
     private List<CourtImage> images = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class SportCourt {
     private List<Review> reviews;
 
     @OneToOne(mappedBy = "sportCourt",
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.REMOVE,
             orphanRemoval = true)
     private Coordinate coordinates;
 

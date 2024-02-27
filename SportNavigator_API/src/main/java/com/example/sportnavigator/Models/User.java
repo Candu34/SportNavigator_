@@ -2,6 +2,7 @@ package com.example.sportnavigator.Models;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,11 @@ public class User {
     @Column(name = "user_id")
     private long id;
 
+    @Column(name = "email")
+    @Email
+    @NotNull(message = "Email should not be empty")
+    private String email;
+
     @Column(name = "first_name")
     @NotNull(message = "first name should not be empty")
     @Size(min = 2, max = 30, message = "First name should be between 2 and 30 characters")
@@ -33,9 +39,6 @@ public class User {
     @NotNull(message = "last name should not be empty")
     @Size(min = 2, max = 30, message = "Last name should not be empty")
     private String lastName;
-
-    @Column(name = "password", length = 1000)
-    private String password;
 
     @OneToOne(mappedBy = "user",
             cascade = CascadeType.ALL,
