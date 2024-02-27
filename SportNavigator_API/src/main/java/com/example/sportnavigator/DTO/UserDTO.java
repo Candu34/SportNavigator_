@@ -33,9 +33,6 @@ public class UserDTO {
     private String lastName;
 
     @JsonProperty
-    private String password;
-
-    @JsonProperty
     EncodedImage image;
 
 

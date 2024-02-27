@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,22 @@ public class UserController {
         User user = userMapper.userDTOToUser(userDTO);
         userService.saveUser(user);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public UserDTO getOne(@PathVariable("id") long id){
+        return userMapper.userToUserDTO(userService.getUserById(id));
+    }
+
+    @GetMapping
+    public List<UserDTO> getAllUsers(){
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User user:users){
+            usersDTO.add(userMapper.userToUserDTO(user));
+        }
+        return usersDTO;
     }
 
 }
