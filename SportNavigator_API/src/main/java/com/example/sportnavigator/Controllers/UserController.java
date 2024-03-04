@@ -25,6 +25,18 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
+    @GetMapping
+    @ResponseBody
+    public List<UserDTO> getAllUsers(){
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User user:users){
+            usersDTO.add(userMapper.userToUserDTO(user));
+        }
+        return usersDTO;
+    }
+
+
     @ResponseBody
     @PostMapping
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid UserDTO userDTO,
@@ -56,14 +68,13 @@ public class UserController {
         return userMapper.userToUserDTO(userService.getUserById(id));
     }
 
-    @GetMapping
-    public List<UserDTO> getAllUsers(){
-        List<User> users = userService.getAllUsers();
-        List<UserDTO> usersDTO = new ArrayList<>();
-        for (User user:users){
-            usersDTO.add(userMapper.userToUserDTO(user));
-        }
-        return usersDTO;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id){
+        userService.deleteUserByID(id);
+       return ResponseEntity.ok(HttpStatus.OK);
     }
+
+
+
 
 }

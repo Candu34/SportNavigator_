@@ -45,11 +45,15 @@ public class User {
             orphanRemoval = true, optional = true)
     private UserImage image;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
+                orphanRemoval = false)
+    private List<SportCourt> sportCourts;
+
     @Column(name = "date_of_created")
     private LocalDateTime dateOfCreated;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            mappedBy = "user")
+            mappedBy = "user", orphanRemoval = true)
     private List<Review> reviews;
 
 
