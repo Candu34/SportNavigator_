@@ -27,10 +27,10 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public List<UserDTO> getAllUsers(){
+    public List<UserDTO> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> usersDTO = new ArrayList<>();
-        for (User user:users){
+        for (User user : users) {
             usersDTO.add(userMapper.userToUserDTO(user));
         }
         return usersDTO;
@@ -40,13 +40,13 @@ public class UserController {
     @ResponseBody
     @PostMapping
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid UserDTO userDTO,
-                                           BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
 
             List<FieldError> errors = bindingResult.getFieldErrors();
 
-            for(FieldError error : errors){
+            for (FieldError error : errors) {
                 errorMsg.append(error.getField())
                         .append(" - ")
                         .append(error.getDefaultMessage())
@@ -64,17 +64,45 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public UserDTO getOne(@PathVariable("id") long id){
+    public UserDTO getOne(@PathVariable("id") long id) {
         return userMapper.userToUserDTO(userService.getUserById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable Long id){
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         userService.deleteUserByID(id);
-       return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<HttpStatus> update(@PathVariable Long id,
+                                             @RequestBody @Valid UserDTO userDTO,
+                                             BindingResult bindingResult) {
 
+        User user = userService.getUserById(id);
 
+        if (user == null) {
+            //TODO Exceptions throwing
+            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+        }
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
 
+            List<FieldError> errors = bindingResult.getFieldErrors();
+
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField())
+                        .append(" - ")
+                        .append(error.getDefaultMessage())
+                        .append(";");
+            }
+            //TODO Exceptions throwing
+        }
+        user = userMapper.userDTOToUser(userDTO);
+        System.out.println(user.getLastName() + ", " + user.getFirstName());
+        user.setId(id);
+        userService.saveUser(user);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }

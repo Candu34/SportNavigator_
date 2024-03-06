@@ -30,7 +30,9 @@ public class UserMapper {
     }
 
     public User userDTOToUser(UserDTO userDTO){
-        if (userDTO == null) return null; //TODO Exception throwing
+        if (userDTO == null) {
+            //TODO Exception throwing
+        }
 
         User user = new User();
         UserImage userImage= imageMapper.EncodedImageToImage(userDTO.getImage(), user);

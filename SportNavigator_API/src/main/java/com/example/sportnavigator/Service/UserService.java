@@ -16,31 +16,31 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void saveUser(User user){
-        if(userRepository.findByEmail(user.getEmail()) != null){
+    public void saveUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             //TODO Exception throwing
         } else {
             userRepository.save(user);
         }
     }
 
-    public User getUserById(Long id){
+    public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             return null;
             //TODO add exception throwing
-        } else {
-            return user.get();
         }
+        return user.get();
     }
 
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Transactional
-    public void deleteUserByID(Long id){
+    public void deleteUserByID(Long id) {
         userRepository.deleteById(id);
     }
+
 
 }
