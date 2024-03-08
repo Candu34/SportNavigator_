@@ -36,7 +36,7 @@ public class SportCourt {
             mappedBy = "sportCourt")
     private List<CourtImage> images = new ArrayList<>();
 
-    @Column(name = "date_of_creating")
+    @Column(name = "date_of_creating", nullable = false, updatable = false)
     private LocalDateTime dateOfCreated;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)

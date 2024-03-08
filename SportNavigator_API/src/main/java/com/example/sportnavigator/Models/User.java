@@ -49,7 +49,11 @@ public class User {
                 orphanRemoval = false)
     private List<SportCourt> sportCourts;
 
-    @Column(name = "date_of_created")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
+                orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Event> events;
+
+    @Column(name = "date_of_created", nullable = false, updatable = false)
     private LocalDateTime dateOfCreated;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,

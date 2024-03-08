@@ -30,6 +30,9 @@ public class Event {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private SportCourt sportCourt;
 
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private User user;
+
     @Column(name = "event_time")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime event_time;
