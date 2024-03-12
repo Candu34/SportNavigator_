@@ -2,10 +2,13 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.Models.Event;
 import com.example.sportnavigator.Repository.EventRepository;
+import com.example.sportnavigator.Utils.Excetions.EventNotFoundException;
+import com.example.sportnavigator.Utils.Excetions.UnexpectedDateTimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +20,11 @@ public class EventService {
     private final EventRepository eventRepository;
 
     @Transactional(readOnly = false)
-    public void save(Event event){
+    public void save(Event event){ LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(event.getEvent_time())){
+            throw new UnexpectedDateTimeException("The time of the event should be after the current date and time");
+        }
+
         eventRepository.save(event);
     }
 
@@ -29,7 +36,7 @@ public class EventService {
     public Event findOne(Long id){
         Optional<Event> event = eventRepository.findById(id);
         if(event.isEmpty()){
-            //TODO Exception throwing
+            throw new EventNotFoundException("Event with this id wasn't found!");
         }
 
         return event.get();

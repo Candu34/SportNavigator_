@@ -1,9 +1,8 @@
 package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.Models.Review;
-import com.example.sportnavigator.Models.SportCourt;
-import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.ReviewRepository;
+import com.example.sportnavigator.Utils.Excetions.ReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class ReviewService {
     public Review findById(Long id) {
         Optional<Review> review = reviewRepository.findById(id);
         if (review.isEmpty()) {
-            //TODO Exception throwing
+            throw new ReviewNotFoundException("Review with this id wasn't found");
         }
 
         return review.get();

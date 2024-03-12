@@ -2,6 +2,8 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.UserRepository;
+import com.example.sportnavigator.Utils.Excetions.UserExistingEmailException;
+import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,7 @@ public class UserService {
     @Transactional
     public void saveUser(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            //TODO Exception throwing
+            throw new UserExistingEmailException("User with this email already exists");
         } else {
             userRepository.save(user);
         }
@@ -27,8 +29,7 @@ public class UserService {
     public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            return null;
-            //TODO add exception throwing
+            throw new UserNotFoundException("User with this id wasn't found");
         }
         return user.get();
     }

@@ -2,6 +2,7 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Repository.SportCourtRepository;
+import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,7 @@ public class SportCourtService {
     public SportCourt getOne(Long id) {
         Optional<SportCourt> sportCourt = sportCourtRepository.findById(id);
         if (sportCourt.isEmpty()) {
-            return null;
-            // TODO Exception throwing
+            throw new SportCourtNotCreatedException("SportCourt with this id wasn't found!");
         }
         return sportCourt.get();
     }
