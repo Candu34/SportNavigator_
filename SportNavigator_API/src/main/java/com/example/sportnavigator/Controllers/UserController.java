@@ -5,6 +5,7 @@ import com.example.sportnavigator.DTO.UserDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;
+import com.example.sportnavigator.Utils.Excetions.UserNotCreatedException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class UserController {
                         .append(";");
             }
 
-            //TODO Exceptions throwing
+            throw new UserNotCreatedException(errorMsg.toString());
 
         }
 
@@ -82,7 +83,6 @@ public class UserController {
         User user = userService.getUserById(id);
 
         if (user == null) {
-            //TODO Exceptions throwing
             return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
         }
         if (bindingResult.hasErrors()) {
@@ -96,7 +96,7 @@ public class UserController {
                         .append(error.getDefaultMessage())
                         .append(";");
             }
-            //TODO Exceptions throwing
+            throw new UserNotCreatedException(errorMsg.toString());
         }
         user = userMapper.userDTOToUser(userDTO);
         System.out.println(user.getLastName() + ", " + user.getFirstName());

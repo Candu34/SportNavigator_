@@ -8,6 +8,7 @@ import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.SportCourtRepository;
 import com.example.sportnavigator.Service.SportCourtService;
+import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class SportCourtController {
                         .append(";");
             }
 
-            //TODO Exceptions throwing
+           throw new SportCourtNotCreatedException(errorMsg.toString());
 
         }
 

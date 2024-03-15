@@ -42,6 +42,7 @@ public class EventMapper {
         eventDTO.setDescription(event.getDescription());
         eventDTO.setSportCourtID(event.getSportCourt().getId());
         eventDTO.setEvent_time(event.getEvent_time().toString());
+        eventDTO.setUserId(event.getUser().getId());
 
         return eventDTO;
     }

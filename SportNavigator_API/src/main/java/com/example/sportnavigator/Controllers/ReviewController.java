@@ -4,6 +4,7 @@ import com.example.sportnavigator.DTO.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
 import com.example.sportnavigator.Service.ReviewService;
+import com.example.sportnavigator.Utils.Excetions.ReviewNotCreatedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,7 @@ public class ReviewController {
                         .append(";");
             }
 
-            //TODO Exceptions throwing
+            throw new ReviewNotCreatedException(errorMsg.toString());
         }
         Review review = reviewMapper.ReviewDTOToReview(reviewDTO);
         reviewService.save(review);

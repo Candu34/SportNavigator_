@@ -5,6 +5,7 @@ import com.example.sportnavigator.DTO.EventDTO;
 import com.example.sportnavigator.Mapper.EventMapper;
 import com.example.sportnavigator.Models.Event;
 import com.example.sportnavigator.Service.EventService;
+import com.example.sportnavigator.Utils.Excetions.EventNotCreatedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class EventController {
                         .append(";");
             }
 
-            //TODO Exceptions throwing
+            throw new EventNotCreatedException(errorMsg.toString());
         }
 
         eventService.save(eventMapper.EnventDTOToEvent(eventDTO));
