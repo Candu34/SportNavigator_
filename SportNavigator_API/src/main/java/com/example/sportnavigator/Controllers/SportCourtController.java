@@ -9,6 +9,7 @@ import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.SportCourtRepository;
 import com.example.sportnavigator.Service.SportCourtService;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
+import com.example.sportnavigator.Utils.Excetions.SportCourtNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -85,8 +86,7 @@ public class SportCourtController {
         SportCourt sportCourt = sportCourtService.getOne(id);
 
         if (sportCourt == null) {
-            //TODO Exceptions throwing
-            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+            throw new SportCourtNotFoundException("Sport court with this id wasn't found!");
         }
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -99,7 +99,7 @@ public class SportCourtController {
                         .append(error.getDefaultMessage())
                         .append(";");
             }
-            //TODO Exceptions throwing
+           throw new SportCourtNotCreatedException(errorMsg.toString());
         }
         sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
         sportCourt.setId(id);
