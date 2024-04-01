@@ -20,5 +20,4 @@ public interface SportCourtRepository extends JpaRepository<SportCourt, Long> {
 
     public List<SportCourt> findSportCourtsBySportAndCourtType(String sport, String courtType);
 
-
 }

@@ -61,6 +61,15 @@ public class User {
     private List<Review> reviews;
 
 
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "user_favorite_courts",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "sport_court_id") }
+    )
+    private List<SportCourt> favoriteSportCourts;
+
+
     @PrePersist
     public void init(){
         this.dateOfCreated = LocalDateTime.now();
