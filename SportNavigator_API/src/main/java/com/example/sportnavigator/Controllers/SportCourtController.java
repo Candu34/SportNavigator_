@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courts")
@@ -30,8 +31,8 @@ public class SportCourtController {
     private final SportCourtMapper sportCourtMapper;
 
 
-    @PostMapping
-    @ResponseBody
+    @PostMapping()
+    @ResponseBody()
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid SportCourtDTO sportCourtDTO,
                                            BindingResult bindingResult){
 
@@ -58,8 +59,18 @@ public class SportCourtController {
 
     @GetMapping()
     @ResponseBody()
-    public List<SportCourtDTO> getAll(){
-        List<SportCourt> sportCourts = sportCourtService.findAll();
+    public List<SportCourtDTO> getAll(@RequestParam("sport") Optional<String> sport, @RequestParam("court_type") Optional<String> court_type){
+        List<SportCourt> sportCourts;
+        if (sport.isPresent() && court_type.isPresent()) {
+            sportCourts = sportCourtService.findAllBySportAndCourtType(sport.get(), court_type.get());
+        }   else if (sport.isPresent()){
+            sportCourts = sportCourtService.findAllBySport(sport.get());
+        } else if (court_type.isPresent()) {
+            sportCourts = sportCourtService.findAllByCourtType(court_type.get());
+        } else {
+            sportCourts = sportCourtService.findAll();
+        }
+
         List<SportCourtDTO> sportCourtsDTO = new ArrayList<>();
         for(SportCourt sportCourt:sportCourts){
             sportCourtsDTO.add(sportCourtMapper.SportCourtToSportCourtDTO(sportCourt));

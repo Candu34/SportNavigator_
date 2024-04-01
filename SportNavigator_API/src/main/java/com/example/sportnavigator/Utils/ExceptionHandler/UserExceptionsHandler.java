@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class UserExceptionsHandler {
 
 @ExceptionHandler(value = UserNotFoundException.class)
-public ResponseEntity<ErrorMessage> handleUserNotFoundException (UserNotFoundException e) {
+protected ResponseEntity<ErrorMessage> handleUserNotFoundException (UserNotFoundException e) {
     ErrorMessage errorMessage =new ErrorMessage(e.getMessage(), System.currentTimeMillis());
     return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 }
 
 @ExceptionHandler(value = UserExistingEmailException.class)
-public ResponseEntity<ErrorMessage> handleUserExistingEmailException (UserExistingEmailException e) {
+protected ResponseEntity<ErrorMessage> handleUserExistingEmailException (UserExistingEmailException e) {
     ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
     return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 }
 
 @ExceptionHandler(value = UserNotUpdatedException.class)
-public ResponseEntity<ErrorMessage> handleUserNotUpdatedException(UserNotUpdatedException e){
+protected ResponseEntity<ErrorMessage> handleUserNotUpdatedException(UserNotUpdatedException e){
     ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
     return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 }

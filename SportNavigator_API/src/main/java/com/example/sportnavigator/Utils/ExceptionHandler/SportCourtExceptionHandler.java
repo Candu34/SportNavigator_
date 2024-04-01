@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class SportCourtExceptionHandler {
 
     @ExceptionHandler(value = SportCourtNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleSportCourtNotFoundException (SportCourtNotFoundException e) {
+    protected ResponseEntity<ErrorMessage> handleSportCourtNotFoundException (SportCourtNotFoundException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = SportCourtNotCreatedException.class)
-    public ResponseEntity<ErrorMessage> handleSportCourtNotCreatedException (SportCourtNotCreatedException e) {
+    protected ResponseEntity<ErrorMessage> handleSportCourtNotCreatedException (SportCourtNotCreatedException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = SportCourtNotUpdatedException.class)
-    public ResponseEntity<ErrorMessage> handleSportCourtNotUpdatedException(SportCourtNotUpdatedException e) {
+    protected ResponseEntity<ErrorMessage> handleSportCourtNotUpdatedException(SportCourtNotUpdatedException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }

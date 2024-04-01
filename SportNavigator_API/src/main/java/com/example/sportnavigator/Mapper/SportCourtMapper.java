@@ -23,20 +23,18 @@ public class SportCourtMapper {
     private final UserService userService;
 
     public SportCourt SportCourtDTOToSportCourt(SportCourtDTO courtDTO) {
-        Set<CourtType> courtType = new HashSet<>();
-        Set<Sport> sport = new HashSet<>();
         Coordinate coordinate = new Coordinate();
 
-        courtType.add(CourtType.valueOf(courtDTO.getCourtType())); //TODO exception handler
-        sport.add(Sport.valueOf(courtDTO.getSport()));
+         //TODO exception handler
         SportCourt court = new SportCourt();
 
         court.setName(courtDTO.getName());
         court.setDescription(courtDTO.getDescription());
-        court.setCourtTypes(courtType);
+        court.setCourtType(courtDTO.getCourtType());
         court.setUser(userService.getUserById(courtDTO.getUserID()));
-        court.setSport(sport);
-
+        court.setSport(Sport.valueOf(courtDTO.getSport()));
+        System.out.println("Sport: " + court.getSport());
+        court.setCourtType(courtDTO.getCourtType());
         coordinate.setLongitude(courtDTO.getLongitude());
         coordinate.setLatitude(courtDTO.getLatitude());
         coordinate.setSportCourt(court);
@@ -54,7 +52,7 @@ public class SportCourtMapper {
         courtDTO.setId(sportCourt.getId());
         courtDTO.setName(sportCourt.getName());
         courtDTO.setDescription(sportCourt.getDescription());
-        courtDTO.setCourtType(sportCourt.getCourtTypes().toString());
+        courtDTO.setCourtType(sportCourt.getCourtType());
         courtDTO.setUserID(sportCourt.getUser().getId());
         courtDTO.setLatitude(sportCourt.getCoordinates().getLatitude());
         courtDTO.setLongitude(sportCourt.getCoordinates().getLongitude());

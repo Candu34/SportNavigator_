@@ -4,6 +4,8 @@ package com.example.sportnavigator.Models;
 import com.example.sportnavigator.Models.Enums.CourtType;
 import com.example.sportnavigator.Models.Enums.Sport;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +34,12 @@ public class SportCourt {
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
+
+    @NotNull(message = "sport should not be empty")
+    @Column(name = "sport", length = 32, columnDefinition = "varchar(32) default 'UNKNOWN'")
+    @Enumerated(value = EnumType.STRING)
+    Sport sport;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "sportCourt")
     private List<CourtImage> images = new ArrayList<>();
@@ -43,11 +51,8 @@ public class SportCourt {
     @JoinColumn
     private User user;
 
-    @ElementCollection(targetClass = CourtType.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "court_type",
-            joinColumns = @JoinColumn(name = "court_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<CourtType> courtTypes = new HashSet<>();
+    @Column(name = "court_type")
+    String courtType;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "sportCourt")
@@ -58,11 +63,7 @@ public class SportCourt {
             orphanRemoval = true)
     private Coordinate coordinates;
 
-    @ElementCollection(targetClass = Sport.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "sports",
-            joinColumns = @JoinColumn(name = "court_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Sport> sport = new HashSet<>();
+
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "sportCourt")

@@ -1,8 +1,10 @@
 package com.example.sportnavigator.Service;
 
+import com.example.sportnavigator.Models.Coordinate;
 import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Repository.SportCourtRepository;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
+import com.example.sportnavigator.Utils.Excetions.WrongCoordinateRangeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,13 @@ public class SportCourtService {
     }
 
     public void save(SportCourt sportCourt){
-        sportCourtRepository.save(sportCourt);
+        Coordinate coordinate = sportCourt.getCoordinates();
+        if (coordinate.getLatitude() > 31.0 | coordinate.getLatitude() < 21.0
+                | coordinate.getLongitude() > 49.0 | coordinate.getLongitude() < 43.0){
+            throw new WrongCoordinateRangeException("Coordinate outside the app perimeter");
+        } else {
+            sportCourtRepository.save(sportCourt);
+        }
     }
 
     public List<SportCourt> findAll(){
@@ -34,4 +42,18 @@ public class SportCourtService {
     public void deleteById(Long id){
         sportCourtRepository.deleteById(id);
     }
+
+    public List<SportCourt> findAllBySport(String sport){
+        return sportCourtRepository.getAllBySport(sport);
+    }
+
+    public List<SportCourt> findAllByCourtType(String courtType){
+        return sportCourtRepository.findSportCourtsByCourtType(courtType);
+    }
+
+    public List<SportCourt> findAllBySportAndCourtType(String sport, String courtType){
+        return sportCourtRepository.findSportCourtsBySportAndCourtType(sport, courtType);
+    }
+
+
 }

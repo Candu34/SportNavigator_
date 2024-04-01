@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class EventExceptionHandler {
 
     @ExceptionHandler(value = EventNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleEventNotFoundException (EventNotFoundException e) {
+    protected ResponseEntity<ErrorMessage> handleEventNotFoundException (EventNotFoundException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = UnexpectedDateTimeException.class)
-    public ResponseEntity<ErrorMessage> handleUnexpectedDateTimeException (UnexpectedDateTimeException e) {
+    protected ResponseEntity<ErrorMessage> handleUnexpectedDateTimeException (UnexpectedDateTimeException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ReviewExceptionHandler {
 
     @ExceptionHandler(value = ReviewNotCreatedException.class)
-    public ResponseEntity<ErrorMessage> handleReviewNotCreatedException(ReviewNotCreatedException e){
+    protected ResponseEntity<ErrorMessage> handleReviewNotCreatedException(ReviewNotCreatedException e){
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = ReviewNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleReviewNotFoundException (ReviewNotFoundException e){
+    protected ResponseEntity<ErrorMessage> handleReviewNotFoundException (ReviewNotFoundException e){
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }

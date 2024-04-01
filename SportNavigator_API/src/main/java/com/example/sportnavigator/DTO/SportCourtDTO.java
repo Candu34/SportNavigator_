@@ -30,6 +30,11 @@ public class SportCourtDTO {
     private String description;
 
     @JsonProperty
+    @NotNull(message = "sport should not be empty")
+    @Size(min = 3, max = 20, message = "sport should be between 2 and 50 characters")
+    private String sport;
+
+    @JsonProperty
     @NotNull(message = "court type should not be empty")
     private String courtType;
 
@@ -50,8 +55,6 @@ public class SportCourtDTO {
     @JsonProperty
     private double longitude;
 
-    @JsonProperty
-    @NotNull
-    private String sport;
+
 
 }
