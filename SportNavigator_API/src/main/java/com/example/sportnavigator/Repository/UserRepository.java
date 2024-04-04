@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     public User findByEmail(String email);
-    
+
     public List<SportCourt> findFavoriteSportCourtsById(Long id);
 
 }

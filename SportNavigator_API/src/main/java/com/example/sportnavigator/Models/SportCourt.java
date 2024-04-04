@@ -63,8 +63,8 @@ public class SportCourt {
             orphanRemoval = true)
     private Coordinate coordinates;
 
-    @ManyToMany(mappedBy = "favoriteSportCourts")
-    private List<User> usersSetToFavorite;
+    @OneToMany(mappedBy = "sportCourt")
+    private Set<FavoriteSportCourt> usersSetToFavorite;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "sportCourt")
