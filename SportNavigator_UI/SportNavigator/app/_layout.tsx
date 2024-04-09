@@ -1,11 +1,10 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { isLoaded, useFonts } from 'expo-font';
+import { Stack, useRouter, Navigator } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { useColorScheme } from '@/components/useColorScheme';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -15,8 +14,7 @@ export {
 } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: '/screens/start_page',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -48,22 +46,40 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+const isSignedIn = false;
+  useEffect(() => {
+    if(!isSignedIn){
+      router.push('../screens/start_page')
+    }
+  })
 
   const router = useRouter();
 
   return (
       <Stack>
+        <Stack.Screen name="screens/start_page" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/login" options={{
-          title: 'Log in or sign up',
           headerTitleStyle: {
-            fontFamily: 'pop-sb'
+            fontFamily: 'pop-sb',
           },
-          presentation: 'modal',
+          headerTitleAlign: 'center',
+          headerTitle: 'Log in or sign up',
+          presentation: 'fullScreenModal',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity>
+            </TouchableOpacity> 
+          )
+        }}/>
+        <Stack.Screen name="listing/[id]" options={{headerTitle: ''}} />
+        <Stack.Screen name="(modals)/court" options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28}/>
+            </TouchableOpacity> 
           )
         }}/>
       </Stack>

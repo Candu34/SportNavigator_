@@ -22,15 +22,15 @@ const Layout = () => {
             tabBarIcon: ({ color, size}) =>  
             <MaterialIcons  name="favorite-border" color={color} size={size+1} />
            }}/>
-           <Tabs.Screen name="explore" options={{
-            tabBarLabel: '',
-            tabBarIcon: ({ color, size}) =>  
-            <Ionicons name="search" color={color} size={size} />
-           }}/>
            <Tabs.Screen name="inbox" options={{
             tabBarLabel: 'Inbox',
             tabBarIcon: ({ color, size}) =>  
             <AntDesign name="message1" color={color} size={size} />
+           }}/>
+            <Tabs.Screen name="add_new" options={{
+            tabBarLabel: 'Add new',
+            tabBarIcon: ({ color, size}) =>  
+            <Ionicons name="add-circle-outline" color={color} size={size+3} />
            }}/>
             <Tabs.Screen name="profile" options={{
             tabBarLabel: 'Profile',
