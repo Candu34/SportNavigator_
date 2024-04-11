@@ -2,11 +2,9 @@ package com.example.sportnavigator.Controllers;
 
 
 import com.example.sportnavigator.DTO.SportCourtDTO;
-import com.example.sportnavigator.DTO.UserDTO;
+import com.example.sportnavigator.DTO.SportCourtResponse;
 import com.example.sportnavigator.Mapper.SportCourtMapper;
 import com.example.sportnavigator.Models.SportCourt;
-import com.example.sportnavigator.Models.User;
-import com.example.sportnavigator.Repository.SportCourtRepository;
 import com.example.sportnavigator.Service.SportCourtService;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotFoundException;
@@ -14,14 +12,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courts")
@@ -34,7 +29,7 @@ public class SportCourtController {
     @PostMapping()
     @ResponseBody()
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid SportCourtDTO sportCourtDTO,
-                                           BindingResult bindingResult){
+                                           BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -48,43 +43,33 @@ public class SportCourtController {
                         .append(";");
             }
 
-           throw new SportCourtNotCreatedException(errorMsg.toString());
+            throw new SportCourtNotCreatedException(errorMsg.toString());
 
         }
 
         SportCourt sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
         sportCourtService.save(sportCourt);
-        return  ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping()
     @ResponseBody()
-    public List<SportCourtDTO> getAll(@RequestParam("sport") Optional<String> sport, @RequestParam("court_type") Optional<String> court_type){
-        List<SportCourt> sportCourts;
-        if (sport.isPresent() && court_type.isPresent()) {
-            sportCourts = sportCourtService.findAllBySportAndCourtType(sport.get(), court_type.get());
-        }   else if (sport.isPresent()){
-            sportCourts = sportCourtService.findAllBySport(sport.get());
-        } else if (court_type.isPresent()) {
-            sportCourts = sportCourtService.findAllByCourtType(court_type.get());
-        } else {
-            sportCourts = sportCourtService.findAll();
-        }
+    public ResponseEntity<SportCourtResponse> getAll(@RequestParam(value = "sport", required = false) String sport,
+                                                     @RequestParam(value = "courtType", required = false) String courtType,
+                                                     @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                                     @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
 
-        List<SportCourtDTO> sportCourtsDTO = new ArrayList<>();
-        for(SportCourt sportCourt:sportCourts){
-            sportCourtsDTO.add(sportCourtMapper.SportCourtToSportCourtDTO(sportCourt));
-        }
-        return sportCourtsDTO;
+        SportCourtResponse sportCourtResponse = sportCourtService.findAll(sport, courtType, pageNo, pageSize);
+        return new ResponseEntity<>(sportCourtResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public SportCourtDTO findOne(@PathVariable("id") Long id){
+    public SportCourtDTO findOne(@PathVariable("id") Long id) {
         return sportCourtMapper.SportCourtToSportCourtDTO(sportCourtService.getOne(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteOne(@PathVariable("id") long id){
+    public ResponseEntity<HttpStatus> deleteOne(@PathVariable("id") long id) {
         sportCourtService.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -110,7 +95,7 @@ public class SportCourtController {
                         .append(error.getDefaultMessage())
                         .append(";");
             }
-           throw new SportCourtNotCreatedException(errorMsg.toString());
+            throw new SportCourtNotCreatedException(errorMsg.toString());
         }
         sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
         sportCourt.setId(id);
