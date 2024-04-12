@@ -1,5 +1,6 @@
 package com.example.sportnavigator.Service;
 
+import com.example.sportnavigator.DTO.ResponeInfo.ResponseInfo;
 import com.example.sportnavigator.DTO.SportCourtDTO;
 import com.example.sportnavigator.DTO.SportCourtResponse;
 import com.example.sportnavigator.Mapper.SportCourtMapper;
@@ -46,6 +47,8 @@ public class SportCourtService {
     public SportCourtResponse findAll(String sport, String courtType, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<SportCourt> sportCourts;
+        String next;
+        String prev;
         if (sport == null && courtType == null) {
             sportCourts = sportCourtRepository.findAll(pageable);
         } else if (sport != null && courtType != null) {
@@ -58,13 +61,14 @@ public class SportCourtService {
 
         List<SportCourtDTO> content = sportCourts.stream().map(sportCourtMapper::SportCourtToSportCourtDTO).toList();
         SportCourtResponse sportCourtResponse = new SportCourtResponse();
-
+        ResponseInfo responseInfo = new ResponseInfo();
         sportCourtResponse.setContent(content);
-        sportCourtResponse.setPageNo(sportCourts.getNumber());
-        sportCourtResponse.setPageSize(sportCourts.getSize());
-        sportCourtResponse.setTotalElements(sportCourts.getTotalElements());
-        sportCourtResponse.setTotalPages(sportCourts.getTotalPages());
-        sportCourtResponse.setLast(sportCourts.isLast());
+        responseInfo.setPageNo(sportCourts.getNumber());
+        responseInfo.setPageSize(sportCourts.getSize());
+        responseInfo.setTotalElements(sportCourts.getTotalElements());
+        responseInfo.setTotalPages(sportCourts.getTotalPages());
+        responseInfo.setLast(sportCourts.isLast());
+        sportCourtResponse.setResponseInfo(responseInfo);
 
 
         return sportCourtResponse;

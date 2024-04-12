@@ -57,7 +57,7 @@ public class SportCourtController {
     public ResponseEntity<SportCourtResponse> getAll(@RequestParam(value = "sport", required = false) String sport,
                                                      @RequestParam(value = "courtType", required = false) String courtType,
                                                      @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-                                                     @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+                                                     @RequestParam(value = "pageSize", defaultValue = "2", required = false) int pageSize) {
 
         SportCourtResponse sportCourtResponse = sportCourtService.findAll(sport, courtType, pageNo, pageSize);
         return new ResponseEntity<>(sportCourtResponse, HttpStatus.OK);
