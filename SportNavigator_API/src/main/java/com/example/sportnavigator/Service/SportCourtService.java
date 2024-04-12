@@ -49,9 +49,9 @@ public class SportCourtService {
         if (sport == null && courtType == null) {
             sportCourts = sportCourtRepository.findAll(pageable);
         } else if (sport != null && courtType != null) {
-            sportCourts = sportCourtRepository.findSportCourtsBySportAndCourtType(Sport.valueOf(sport), courtType, pageable);
+            sportCourts = sportCourtRepository.findSportCourtsBySportAndCourtType(Sport.valueOf(sport.toUpperCase()), courtType, pageable);
         } else if (sport != null && courtType == null) {
-            sportCourts = sportCourtRepository.getAllBySport(Sport.valueOf(sport), pageable);
+            sportCourts = sportCourtRepository.getAllBySport(Sport.valueOf(sport.toUpperCase()), pageable);
         } else {
             sportCourts = sportCourtRepository.findSportCourtsByCourtType(courtType, pageable);
         }
