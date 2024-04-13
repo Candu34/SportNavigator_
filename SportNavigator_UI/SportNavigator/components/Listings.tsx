@@ -18,16 +18,17 @@ const Listings = ({ listings, category } : Props) => {
     const [base64Image, setBase64Image] = useState<string>('');
     const [nextPage, setNextPage] = useState();
 
+    const initialPage = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts'+'?sport='+category;
+
     const fetchItems = async () => {
         try {
             setLoading(true);
             console.log("Fetching -------------------")
-            const url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts'+'?sport='+category;
-            const response = await fetch(url);
+            const response = await fetch(initialPage);
             const responseJson = await response.json();
             setItems(responseJson.content); 
             const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
-            const nextUrl = url + '&pageNo='+ nextPageNo
+            const nextUrl = initialPage + '&pageNo='+ nextPageNo
             setNextPage(nextUrl as any)
     
             setLoading(false);
@@ -57,6 +58,7 @@ const Listings = ({ listings, category } : Props) => {
     };
 };
 
+
     useEffect(() => {
         fetchItems();
     }, [category]);
@@ -78,11 +80,16 @@ const Listings = ({ listings, category } : Props) => {
                         <TouchableOpacity style={{position: 'absolute', right: 30, top: 30}}>
                             <Ionicons name="heart-outline" size={24} color={'#fff'}/>
                         </TouchableOpacity>
-                        <View style={styles.textContainer}>
-                            <Text style={{fontFamily: 'pop-b', paddingLeft: 10}}>{item.name}</Text>
+                        <View style={{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between',
+                            paddingTop: 10
+                        }}>
+                            <View style={styles.textContainer}>
+                                <Text style={{fontFamily: 'pop-b', fontSize: 16}}>{item.name}</Text>
+                                <Text style={{fontFamily: 'pop-sb'}}>{item.courtType}</Text>
+                            </View>
                             <View style={{flexDirection: 'row', gap: 4}}>
-                                <Ionicons name={'star'} size={14} />
-                                <Text style={{fontFamily: 'pop-sb', paddingHorizontal: 5}}>0.0</Text>
+                                    <Ionicons name={'star'} size={14} />
+                                    <Text style={{fontFamily: 'pop-sb', paddingHorizontal: 5}}>0.0</Text>
                             </View>
                         </View>
                     </Animated.View>
@@ -100,6 +107,9 @@ const Listings = ({ listings, category } : Props) => {
             onEndReached={loadMore}
             onEndReachedThreshold={1}
             ListFooterComponent={() => loading && <ActivityIndicator/>}
+            showsVerticalScrollIndicator={false}      
+            initialNumToRender={3}   
+            windowSize={5}
           />
         </View>
     );
@@ -121,9 +131,9 @@ const styles = StyleSheet.create({
         borderRadius: 25,
     },
     textContainer: {
-        paddingTop: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        gap: 10,
+        alignItems: 'center'
     },
 });
 
