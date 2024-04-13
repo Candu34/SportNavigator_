@@ -21,58 +21,41 @@ const Listings = ({ listings, category } : Props) => {
     const fetchItems = async () => {
         try {
             setLoading(true);
+            console.log("Fetching -------------------")
             const url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts'+'?sport='+category;
             const response = await fetch(url);
-            console.log(category.toUpperCase)
             const responseJson = await response.json();
             setItems(responseJson.content); 
-
             const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
             const nextUrl = url + '&pageNo='+ nextPageNo
             setNextPage(nextUrl as any)
-
+    
             setLoading(false);
         } catch (error) {
             console.error("Error fetching items:", error);
         }
     };
-
-    // const loadMore = async () => {
-    //     if (nextPage) {
-    //         setLoading(true);
-    //         const response = await fetch(nextPage as any);
-    //         const responseJson = await response.json();
-
-    //         setItems((existingItems) => {
-    //             return [...existingItems, ...responseJson] as any;
-    //         })
-    //         const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
-    //         const nextUrl = nextPage.replace(/.$/, nextPageNo)
-    //         setNextPage(nextUrl as any)
-    //     }else {
-    //             console.error("Next page URL is undefined");
-    //         }
-    // };
     
-    const loadMore = async () => {
-        if (nextPage) {
-            setLoading(true);
-            const response = await fetch(nextPage as any);
-            const responseJson = await response.json();
     
-            setItems((existingItems) => {
-                return [...existingItems, ...responseJson.content] as any;
-            });
-    
-            const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
-            const nextUrl = nextPage.replace(/pageNo=\d+/, 'pageNo=' + nextPageNo);
-            setNextPage(nextUrl as any);
-            setLoading(false);
-        } else {
-            console.error("Next page URL is undefined");
+    const loadMore = async () => { 
+        if (loading){
+            return;
         }
+            if (nextPage) {
+                setLoading(true);
+                console.log("Fetching -------------------") ;
+
+                const response = await fetch(nextPage as any);
+                const responseJson = await response.json();
+                setItems((existingItems) => {
+                    return [...existingItems, ...responseJson.content] as any;
+                });
+
+                const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
+                const nextUrl = nextPage.replace(/pageNo=\d+/, 'pageNo=' + nextPageNo);
+                setNextPage(nextUrl as any);
     };
-    
+};
 
     useEffect(() => {
         fetchItems();
@@ -99,7 +82,7 @@ const Listings = ({ listings, category } : Props) => {
                             <Text style={{fontFamily: 'pop-b', paddingLeft: 10}}>{item.name}</Text>
                             <View style={{flexDirection: 'row', gap: 4}}>
                                 <Ionicons name={'star'} size={14} />
-                                <Text style={{fontFamily: 'mon-sb', paddingHorizontal: 5}}>0.0</Text>
+                                <Text style={{fontFamily: 'pop-sb', paddingHorizontal: 5}}>0.0</Text>
                             </View>
                         </View>
                     </Animated.View>
@@ -114,19 +97,9 @@ const Listings = ({ listings, category } : Props) => {
             ref={listRef}
             renderItem={renderRow}
             keyExtractor={(item) => item.id.toString()} 
-            ListFooterComponent={() => (
-                <View>
-                    {loading && <ActivityIndicator/>}
-
-                    <Text onPress={loadMore}
-                        style={{alignSelf: 'center', fontSize: 20, color: 'blue'}}>
-                            Load More
-                    </Text>
-
-                </View>
-
-                
-            )}
+            onEndReached={loadMore}
+            onEndReachedThreshold={1}
+            ListFooterComponent={() => loading && <ActivityIndicator/>}
           />
         </View>
     );
