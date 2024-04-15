@@ -72,7 +72,7 @@ const isSignedIn = false;
             </TouchableOpacity> 
           )
         }}/>
-        <Stack.Screen name="listing/[id]" options={{headerTitle: ''}} />
+        <Stack.Screen name="listing/[id]" options={{headerTitle: '', headerTransparent: true}} />
         <Stack.Screen name="(modals)/court" options={{
           presentation: 'transparentModal',
           animation: 'fade',

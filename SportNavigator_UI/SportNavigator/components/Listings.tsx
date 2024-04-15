@@ -23,7 +23,6 @@ const Listings = ({ listings, category } : Props) => {
     const fetchItems = async () => {
         try {
             setLoading(true);
-            console.log("Fetching -------------------")
             const response = await fetch(initialPage);
             const responseJson = await response.json();
             setItems(responseJson.content); 
@@ -44,7 +43,6 @@ const Listings = ({ listings, category } : Props) => {
         }
             if (nextPage) {
                 setLoading(true);
-                console.log("Fetching -------------------") ;
 
                 const response = await fetch(nextPage as any);
                 const responseJson = await response.json();
