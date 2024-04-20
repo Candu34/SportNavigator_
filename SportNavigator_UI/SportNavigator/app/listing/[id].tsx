@@ -1,16 +1,15 @@
 import { View, Text, StyleSheet, Dimensions, Touchable, TouchableOpacity, Share } from "react-native";
-import React, {useState, useEffect, useLayoutEffect} from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import Animated, {
-    SlideInDown,
-    interpolate,
-    useAnimatedRef,
-    useAnimatedStyle,
-    useScrollViewOffset,
-  } from 'react-native-reanimated';
+  SlideInDown,
+  interpolate,
+  useAnimatedRef,
+  useAnimatedStyle,
+  useScrollViewOffset,
+} from 'react-native-reanimated';
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import { AnimatedView } from "react-native-reanimated/lib/typescript/reanimated2/component/View";
 
 
 const IMG_HEIGHT = 300;
@@ -18,50 +17,88 @@ const { width } = Dimensions.get('window');
 
 
 const Page = () => {
-    const { id } = useLocalSearchParams<{id: string}>();
-    const [item, setItem] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [base64Image, setBase64Image] = useState<string>('');
-    const scrollRef = useAnimatedRef<Animated.ScrollView>();
-    const navigation = useNavigation();
+  const { id } = useLocalSearchParams<{id: string}>();
+  const [item, setItem] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
+  const [base64Image, setBase64Image] = useState<string>('');
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const navigation = useNavigation();
 
-    const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts/'+id;
-    const router = useRouter();
-    const scrollOffset = useScrollViewOffset(scrollRef);
+  const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts/'+id;
+  const router = useRouter();
+  const scrollOffset = useScrollViewOffset(scrollRef);
 
-    const shareCourt = async() => {
-        try{
-            await Share.share({
-                title: item.name,
-                url: item_url,
-            });
-        }catch (err) {
-            console.log(err);
-        }
+  const shareCourt = async() => {
+    try{
+      await Share.share({
+        title: item.name,
+        url: item_url,
+      });
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerBackground: () => ( 
-                <Animated.View style={[styles.header, headerAnimatedStyle]}/>
-            ),
-            headerRight: () => (
-                <View style={styles.bar}>
-                    <TouchableOpacity style={styles.roundButton} onPress={shareCourt} >
-                        <Ionicons name='share-outline' size={22} color={'#000'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.roundButton} >
-                        <Ionicons name='heart-outline' size={22} color={'#000'}/>
-                    </TouchableOpacity>
-                </View>
-            ),
-            headerLeft: () => (
-                <TouchableOpacity style={styles.roundButton} onPress={() => (router.back())} >
-                    <Ionicons name='chevron-back' size={24} color={'#000'}/>
-                </TouchableOpacity>
-            ),
-        });
-    }, [])
+  const addToFavorite = (courtId: string) => {
+    const url = `https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite?userId=1&courtId=`+id;
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to add to favorites');
+      }
+      return response.text(); 
+    })
+    .then(data => {
+      console.log('Response data:', data);
+      setIsFavorite(data === "true"); // Update favorite state based on response
+    })
+    .catch(error => {
+      console.error('Error adding to favorites:', error);
+    });
+  }
+
+  useEffect(() => {
+    toggleFavorite();
+  }, [isFavorite]); // Re-run toggleFavorite when favorite state changes
+
+
+  const toggleFavorite = async () => {
+    const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite/verify?userId=1&courtId=`+item.id);
+    const isFavoriteString = await response.text(); 
+    const isFavorite = isFavoriteString === "true"; 
+    setIsFavorite(isFavorite);
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackground: () => ( 
+        <Animated.View style={[styles.header, headerAnimatedStyle]}/>
+      ),
+      headerRight: () => (
+        <View style={styles.bar}>
+          <TouchableOpacity style={styles.roundButton} onPress={shareCourt}>
+            <Ionicons name='share-outline' size={22} color={'#000'}/>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.roundButton} // Set opacity based on favorite state
+            onPress={() => addToFavorite(item.id)}>
+            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? 'red' : '#000'}/>
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity style={styles.roundButton} onPress={() => (router.back())} >
+          <Ionicons name='chevron-back' size={24} color={'#000'}/>
+        </TouchableOpacity>
+      ),
+    });
+  }, [isFavorite])
 
     const imageAnimatedStyle = useAnimatedStyle(() => {
         return {
@@ -172,7 +209,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 10,
+        gap: 10
     },
     roundButton: {
         width: 40,

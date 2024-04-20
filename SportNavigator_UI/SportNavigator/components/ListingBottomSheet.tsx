@@ -23,7 +23,7 @@ const ListingBottomSheet = ({category} : Props) => {
         snapPoints={snapPoints}
         animateOnMount={!reducedMotion}>
                 <View style={{flex: 1}}>
-                    <Listings category={category}/>
+                    {/* <Listings category={category}/>  */}
                 </View>
             </BottomSheet>
         </GestureHandlerRootView>
