@@ -4,6 +4,7 @@ package com.example.sportnavigator.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class favoriteSportCourtMapper {
-    //TODO
+public class FavoriteSportCourtMapper {
+
+   // public
 }

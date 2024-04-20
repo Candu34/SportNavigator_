@@ -47,8 +47,6 @@ public class SportCourtService {
     public SportCourtResponse findAll(String sport, String courtType, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<SportCourt> sportCourts;
-        String next;
-        String prev;
         if (sport == null && courtType == null) {
             sportCourts = sportCourtRepository.findAll(pageable);
         } else if (sport != null && courtType != null) {
