@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, Touchable, TouchableOpacity, Share } from "react-native";
 import React, {useState, useEffect, useLayoutEffect} from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import Animated, {
     SlideInDown,
     interpolate,
@@ -10,6 +10,7 @@ import Animated, {
   } from 'react-native-reanimated';
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { AnimatedView } from "react-native-reanimated/lib/typescript/reanimated2/component/View";
 
 
 const IMG_HEIGHT = 300;
@@ -25,7 +26,7 @@ const Page = () => {
     const navigation = useNavigation();
 
     const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts/'+id;
-
+    const router = useRouter();
     const scrollOffset = useScrollViewOffset(scrollRef);
 
     const shareCourt = async() => {
@@ -41,18 +42,21 @@ const Page = () => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            headerBackground: () => ( 
+                <Animated.View style={[styles.header, headerAnimatedStyle]}/>
+            ),
             headerRight: () => (
                 <View style={styles.bar}>
                     <TouchableOpacity style={styles.roundButton} onPress={shareCourt} >
                         <Ionicons name='share-outline' size={22} color={'#000'}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.roundButton} onPress={shareCourt} >
+                    <TouchableOpacity style={styles.roundButton} >
                         <Ionicons name='heart-outline' size={22} color={'#000'}/>
                     </TouchableOpacity>
                 </View>
             ),
             headerLeft: () => (
-                <TouchableOpacity style={styles.roundButton} onPress={shareCourt} >
+                <TouchableOpacity style={styles.roundButton} onPress={() => (router.back())} >
                     <Ionicons name='chevron-back' size={24} color={'#000'}/>
                 </TouchableOpacity>
             ),
@@ -78,6 +82,12 @@ const Page = () => {
             ],
         };
     });
+
+    const headerAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
+        }
+    })
 
     const fetchItems = async () => {
         try{
@@ -172,8 +182,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         color: Colors.primary,
-    }
+    },
+    header: {
+        backgroundColor: '#fff',
+        height: 100,
+        borderBottomColor: Colors.grey,
+        borderWidth: StyleSheet.hairlineWidth,
+    },
 
-})
+});
 
 export default Page
