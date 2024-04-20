@@ -88,4 +88,9 @@ public class FavoriteSportCourtService {
         return favoriteSportCourtResponse;
     }
 
+    public Boolean isInFavorite(Long userId, Long sportCourtId){
+        FavoriteSportCourtsKey key = new FavoriteSportCourtsKey(userId, sportCourtId);
+        return favoriteSportCourtRepository.existsById(key);
+    }
+
 }

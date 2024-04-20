@@ -26,14 +26,20 @@ public class FavoriteSportCourtController {
     }
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> addToFavorite(
+    public ResponseEntity<String> addToFavorite(
             @RequestParam(value = "userId") Long userId,
             @RequestParam(value = "courtId") Long sportCourtId) {
 
         favoriteSportCourtService.addOrDeleteFromFavorite(userId, sportCourtId);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        String currentStatus = favoriteSportCourtService.isInFavorite(userId, sportCourtId).toString();
+        return new ResponseEntity<>(currentStatus, HttpStatus.OK);
     }
 
+    @GetMapping("/verify")
+    @ResponseBody()
+    public String isInFavorite( @RequestParam(value = "userId") Long userId,
+                                @RequestParam(value = "courtId") Long sportCourtId){
+        return favoriteSportCourtService.isInFavorite(userId, sportCourtId).toString();
+    }
 
 }
