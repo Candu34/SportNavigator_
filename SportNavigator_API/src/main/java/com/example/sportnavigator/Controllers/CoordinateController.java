@@ -18,23 +18,19 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/coordinatem")
+@RequestMapping("/api/coordinate")
 public class CoordinateController {
     private final CoordinateService coordinateService;
     private final CoordinateMapper coordinateMapper;
 
     @GetMapping()
     @ResponseBody()
-    public List<CoordinateDTO> findAll(){
-        List<Coordinate> coordinates = coordinateService.findAll();
-        List<CoordinateDTO> coordinateDTOS = new ArrayList<>();
-
-        for (Coordinate coordinate: coordinates) {
-            coordinateDTOS.add(coordinateMapper.coordinateToCoordinateDTO(
-                    coordinate
-            ));
+    public List<CoordinateDTO> findAll(@RequestParam(value = "sport", required = false) String sport){
+        if (sport == null) {
+            return coordinateService.findAll();
+        } else {
+            return coordinateService.findAllBySportCourtSport(sport);
         }
-        return coordinateDTOS;
     }
 
     @GetMapping("/{id}")

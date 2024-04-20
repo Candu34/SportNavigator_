@@ -26,8 +26,8 @@ public class CoordinateMapper {
     public CoordinateDTO coordinateToCoordinateDTO(Coordinate coordinate){
         CoordinateDTO coordinateDTO = new CoordinateDTO();
         coordinateDTO.setId(coordinate.getId());
-        coordinateDTO.setLatitude(coordinateDTO.getLatitude());
-        coordinateDTO.setLongitude(coordinateDTO.getLongitude());
+        coordinateDTO.setLatitude(coordinate.getLatitude());
+        coordinateDTO.setLongitude(coordinate.getLongitude());
         coordinateDTO.setSportCourtId(coordinate.getSportCourt().getId());
 
         return coordinateDTO;

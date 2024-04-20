@@ -41,8 +41,8 @@ public class FavoriteSportCourtService {
         favoriteSportCourtRepository.deleteByUser(user);
     }
 
-    public List<FavoriteSportCourt> findAllBySportCourtId(Long sportCourtId){
-        return favoriteSportCourtRepository.findAllByUser_Id(sportCourtId);
+    public List<FavoriteSportCourt> findAllByUserId(Long userId){
+        return favoriteSportCourtRepository.findAllByUser_Id(userId);
     }
 
 }
