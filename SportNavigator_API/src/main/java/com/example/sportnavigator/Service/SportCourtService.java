@@ -34,10 +34,12 @@ public class SportCourtService {
         return sportCourt.get();
     }
 
+
+
     public void save(SportCourt sportCourt) {
         Coordinate coordinate = sportCourt.getCoordinates();
-        if (coordinate.getLatitude() > 31.0 | coordinate.getLatitude() < 21.0
-                | coordinate.getLongitude() > 49.0 | coordinate.getLongitude() < 43.0) {
+        if (coordinate.getLongitude() > 31.0 | coordinate.getLongitude() < 21.0
+                | coordinate.getLatitude() > 49.0 | coordinate.getLatitude() < 43.0) {
             throw new WrongCoordinateRangeException("Coordinate outside the app perimeter");
         } else {
             sportCourtRepository.save(sportCourt);

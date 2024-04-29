@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EncodedImage {
 
-
     private String mime;
 
     private String data;
