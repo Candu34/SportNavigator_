@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import { useRouter } from "expo-router";
 import  { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import * as Location from 'expo-location';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import MapView from "react-native-map-clustering";
 import Colors from "@/constants/Colors";
 
@@ -51,10 +51,19 @@ const ListingMap = ({category}: Props) => {
 
     useEffect(() => {
         fetchItems();
-        setIcon(category.toLocaleLowerCase() as any);
+        setIcon(getIconName(category) as any);
     }, [category]);
 
-
+    const getIconName = (sport: string) => {
+        switch(sport) {
+            case "Football":
+                return "soccer"
+            case "Table tennis":
+              return "table-tenis"
+            default:
+                return sport.toLocaleLowerCase();
+          }
+    }
 
   
     useEffect(() => {
@@ -99,7 +108,7 @@ const ListingMap = ({category}: Props) => {
                     }}
                     >
                         <View style={styles.marker}>
-                            <Ionicons name={icon as any} size={24} color={Colors.primary}/>
+                            <MaterialCommunityIcons name={icon as any} size={24} color={Colors.primary}/>
                         </View>
                     </Marker>
                 ))}

@@ -30,7 +30,7 @@ const categories = [
         icon: 'volleyball'
     },
     {
-        name: 'Table tenis',
+        name: 'Table tennis',
         icon: 'table-tennis',
     }
 ]
