@@ -94,8 +94,8 @@ const ListingMap = ({category}: Props) => {
                     onPress={() => onMarkerSeleced(item)}
                     key={item.id}
                     coordinate={{
-                        latitude: +item.longitude,
-                        longitude: +item.latitude
+                        latitude: +item.latitude,
+                        longitude: +item.longitude
                     }}
                     >
                         <View style={styles.marker}>

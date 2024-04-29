@@ -41,8 +41,6 @@ interface Props {
     onCategoryChanged: (category: string) => void;
 }
 
-
-
 const ExploreHeader = ({onCategoryChanged} : Props) => {
 const scrollRef = useRef<ScrollView>(null);
 const itemsRef = useRef<Array<TouchableOpacity | null>>([])

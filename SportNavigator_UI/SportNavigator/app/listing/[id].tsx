@@ -20,7 +20,7 @@ const Page = () => {
   const { id } = useLocalSearchParams<{id: string}>();
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
+  const [isFavorite, setIsFavorite] = useState(); 
   const [base64Image, setBase64Image] = useState<string>('');
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const navigation = useNavigation();
@@ -63,16 +63,18 @@ const Page = () => {
     });
   }
 
+
+
   useEffect(() => {
     toggleFavorite();
-  }, [isFavorite]); // Re-run toggleFavorite when favorite state changes
+  }, [isFavorite]); 
 
-
+  
   const toggleFavorite = async () => {
     const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite/verify?userId=1&courtId=`+item.id);
     const isFavoriteString = await response.text(); 
     const isFavorite = isFavoriteString === "true"; 
-    setIsFavorite(isFavorite);
+    setIsFavorite(isFavorite as any);
   };
 
   useLayoutEffect(() => {

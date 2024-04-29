@@ -20,8 +20,6 @@ const onDataChanged = (category: string) => {
                     header: () => <ExploreHeader onCategoryChanged={onDataChanged}/>,
                 }}
            />
-           {/* <Listings  category={category}/> 
-            <ListingBottomSheet category={category}/> */}
             <ListingMap category={category}/> 
         </View>
     )

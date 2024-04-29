@@ -82,6 +82,19 @@ const isSignedIn = false;
             </TouchableOpacity> 
           )
         }}/>
+        <Stack.Screen name = "(modals)/mapInput" options={{
+          headerTitleStyle: {
+            fontFamily: 'pop-sb'
+          },
+          headerTitle: "Select location on map",
+          headerTitleAlign: 'center',
+          presentation: 'fullScreenModal',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28}/>
+            </TouchableOpacity> 
+          )
+        }}/>
       </Stack>
   );
 }
