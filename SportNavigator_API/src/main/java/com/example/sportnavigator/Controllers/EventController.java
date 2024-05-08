@@ -92,6 +92,12 @@ public class EventController {
         return eventDTOS;
     }
 
+    @GetMapping("/count/{sportCourtId}")
+    @ResponseBody()
+    public Long countBySportCourtId(@PathVariable Long sportCourtId){
+        return eventService.countBySportCourtId(sportCourtId);
+    }
+
 
 
 }

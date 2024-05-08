@@ -10,4 +10,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     public List<Event> getEventsBySportCourtId(Long SportCourtId);
     public List<Event> getEventsByUserId(Long userId);
 
+    public Long countBySportCourt_Id(Long id);
+
 }

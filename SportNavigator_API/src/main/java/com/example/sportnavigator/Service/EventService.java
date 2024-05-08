@@ -50,6 +50,10 @@ public class EventService {
         return eventRepository.getEventsBySportCourtId(sportCourtId);
     }
 
+    public Long countBySportCourtId(Long id){
+        return eventRepository.countBySportCourt_Id(id);
+    }
+
     public List<Event> findByUserId(Long UserId){
         return eventRepository.getEventsByUserId(UserId);
     }
