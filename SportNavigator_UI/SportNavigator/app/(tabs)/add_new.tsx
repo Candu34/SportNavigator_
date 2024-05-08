@@ -97,10 +97,6 @@ const handleSubmit = () => {
         }
         return response.json();
     })
-    .then(data => {
-        console.log('Sport court created successfully:', data);
-        // Optionally, navigate to another screen or show a success message
-    })
     .catch(error => {
         console.error('Error creating sport court:', error);
         Alert.alert('Error', 'Failed to create sport court. Please try again later.');

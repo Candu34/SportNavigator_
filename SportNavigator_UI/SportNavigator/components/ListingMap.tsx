@@ -8,6 +8,7 @@ import MapView from "react-native-map-clustering";
 import Colors from "@/constants/Colors";
 
 
+
 interface Props{
     category: string;
 }
@@ -91,7 +92,7 @@ const ListingMap = ({category}: Props) => {
     return (
         <View style={StyleSheet.absoluteFill}>
             <MapView style={styles.map} showsUserLocation={true}
-            animationEnabled={false }
+            animationEnabled={false}
             provider={PROVIDER_GOOGLE}
             showsMyLocationButton={true}
             initialRegion={INITIAL_REGION_ROMANIA}

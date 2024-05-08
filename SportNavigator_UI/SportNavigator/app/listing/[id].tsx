@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, Touchable, TouchableOpacity, Share } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import Animated, {
   SlideInDown,
   interpolate,
@@ -10,18 +10,33 @@ import Animated, {
 } from 'react-native-reanimated';
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-
+import  { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import * as Location from 'expo-location';
+import MapView from "react-native-maps";
+import { FontAwesome5 } from '@expo/vector-icons';
+import { defaultStyles } from "@/constants/Styles";
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
+
+const INITIAL_REGION_ROMANIA = {
+  latitude: 45.9432,
+  longitude: 24.9668,
+  latitudeDelta: 7,
+  longitudeDelta: 7,
+}
 
 
 const Page = () => {
   const { id } = useLocalSearchParams<{id: string}>();
   const [item, setItem] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [intialRegion, setInitialRegion] = useState(INITIAL_REGION_ROMANIA);
   const [isFavorite, setIsFavorite] = useState(); 
   const [base64Image, setBase64Image] = useState<string>('');
+  const [activities, setActivities] = useState<string>('0');
+
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const navigation = useNavigation();
 
@@ -56,26 +71,33 @@ const Page = () => {
     })
     .then(data => {
       console.log('Response data:', data);
-      setIsFavorite(data === "true"); // Update favorite state based on response
+      setIsFavorite(data === "true"); 
     })
     .catch(error => {
       console.error('Error adding to favorites:', error);
     });
   }
 
-
-
-  useEffect(() => {
-    toggleFavorite();
-  }, [isFavorite]); 
-
-  
   const toggleFavorite = async () => {
     const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite/verify?userId=1&courtId=`+item.id);
     const isFavoriteString = await response.text(); 
     const isFavorite = isFavoriteString === "true"; 
     setIsFavorite(isFavorite as any);
   };
+
+  const getNumberOfEvents = async () => {
+    try {
+      const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/events/count/`+item.id);
+      if (response.ok) {
+        const data = await response.json();
+        setActivities(data);
+        console.error('Failed to fetch events count');
+      }
+    } catch (error) {
+      // Handle any network errors or exceptions
+      console.error('Error fetching events count:', error);
+    }
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -88,7 +110,7 @@ const Page = () => {
             <Ionicons name='share-outline' size={22} color={'#000'}/>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.roundButton} // Set opacity based on favorite state
+            style={styles.roundButton} 
             onPress={() => addToFavorite(item.id)}>
             <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? 'red' : '#000'}/>
           </TouchableOpacity>
@@ -134,6 +156,7 @@ const Page = () => {
             const response = await fetch(item_url);
             const responseJson = await response.json();
             setItem(responseJson); 
+            setIsLoaded(true);
             setLoading(false)
         } catch (error) {
             console.error("Error fetching items:", error);
@@ -144,7 +167,26 @@ const Page = () => {
         fetchItems();
     }, []);
 
+    useEffect(() => {
+      toggleFavorite();
+    }, [isFavorite]); 
+  
+    useEffect(() => {
+      getNumberOfEvents();
+    }, []);
     
+  useEffect(() => {
+    const INITIAL_REGION_ITEM = {
+      latitude: item.latitude,
+      longitude: item.longitude,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+  }
+
+  setInitialRegion(INITIAL_REGION_ITEM);
+  }, []);
+
+
 
     return(
         <View style={styles.container}>
@@ -169,7 +211,32 @@ const Page = () => {
                     </View>
                     <Text style={styles.description}>{item.description}</Text>
                 </View>
+                {/* {isLoaded && (<View style={{flex: 1, alignItems: 'center', alignContent: 'center'}}>
+                  <TouchableOpacity style={styles.mapLink}>
+                    <MapView style={styles.mapView}
+                          provider={PROVIDER_GOOGLE}
+                          showsMyLocationButton={false}
+                          showsUserLocation={false}
+                          animationEnabled={false}>
+
+                          
+                      </MapView>
+                  </TouchableOpacity>
+                </View>)} */}
+
             </Animated.ScrollView>
+
+            <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(200)} >
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <TouchableOpacity style={{flexDirection: 'row', gap: 10}}>
+                      <Text style={{fontSize: 16, fontFamily: 'pop-sb', textDecorationLine: 'underline'}}>{activities}</Text>
+                      <Text style={{fontSize: 16, fontFamily: 'pop-sb'}}>Upcoming activities</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={defaultStyles.btn}>
+                    <Text style={[defaultStyles.btnText, {paddingHorizontal: 10}]}>Add activity</Text>
+                  </TouchableOpacity>
+                </View>
+            </Animated.View>
         </View>
     )
 }
@@ -228,7 +295,17 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.grey,
         borderWidth: StyleSheet.hairlineWidth,
     },
-
+    mapLink: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignContent: 'center'
+    },
+    mapView: {
+      height: 100,
+      width: 300,
+      borderRadius: 30,
+    }
 });
 
 export default Page

@@ -6,11 +6,6 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from '@/constants/Colors';
 import { MaterialCommunityIcons,FontAwesome5 } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-type ItemData = {
-    name: string;
-    icon: string;
-  };
-
 
 const categories = [
     {
