@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, Touchable, TouchableOpacity, Share } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Link, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation, useRouter} from "expo-router";
 import Animated, {
   SlideInDown,
   interpolate,
@@ -227,12 +227,12 @@ const Page = () => {
             </Animated.ScrollView>
 
             <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(200)} >
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', gap: 40 , alignItems: 'center'}}>
                   <TouchableOpacity style={{flexDirection: 'row', gap: 10}}>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb', textDecorationLine: 'underline'}}>{activities}</Text>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb'}}>Upcoming activities</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={defaultStyles.btn}>
+                  <TouchableOpacity style={defaultStyles.btn} onPress={() => {router.navigate("/(modals)/addEvent")}}>
                     <Text style={[defaultStyles.btnText, {paddingHorizontal: 10}]}>Add activity</Text>
                   </TouchableOpacity>
                 </View>

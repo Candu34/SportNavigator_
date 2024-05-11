@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity} from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from "react-native";
+import React, {useState} from "react";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import validate from 'react-native-email-validator';
 
 
 
@@ -13,12 +14,39 @@ import { AntDesign } from '@expo/vector-icons';
 
 const Page = () => {
     useWarmUpBrowser();
+    const [mail, setMail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleMailChange = (text:string) => {
+        setMail(text);
+    };
+    
+    const handlePasswordChange = (text:string) => {
+        setPassword(text);
+    };
+    
+    const handleSubmit = () => {
+            validate(mail)
+              ? console.log('Email is valid')
+              : Alert.alert('Invalid mail');
+
+              password.length < 8 ? Alert.alert("Invalid password"): console.log("valid password");
+       }
+
 
     return (
         <View style={[styles.container, {marginBottom: 30}]}>
-            <TextInput autoCapitalize='none' placeholder='Email'style={[defaultStyles.inputField, {marginBottom: 15, fontFamily: 'pop'}]}/>
-            <TextInput autoCapitalize='none' secureTextEntry={true} placeholder='Password'style={[defaultStyles.inputField, {marginBottom: 30, fontFamily: 'pop'}]}/>
-            <TouchableOpacity style={defaultStyles.btn}>
+            <TextInput autoCapitalize='none' 
+            placeholder='Email'
+            value={mail}
+            style={[defaultStyles.inputField, {marginBottom: 15, fontFamily: 'pop'}]}
+            onChangeText={handleMailChange}/>
+            <TextInput autoCapitalize='none' secureTextEntry={true} 
+            placeholder='Password'
+            onChangeText={handlePasswordChange}
+            value={password}
+            style={[defaultStyles.inputField, {marginBottom: 30, fontFamily: 'pop'}]}/>
+            <TouchableOpacity style={defaultStyles.btn} onPress={handleSubmit}>
                 <Text style={defaultStyles.btnText}>Continue</Text>
             </TouchableOpacity>
             <View style={styles.seperatorView}>

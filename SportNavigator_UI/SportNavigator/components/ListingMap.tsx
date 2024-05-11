@@ -6,6 +6,7 @@ import * as Location from 'expo-location';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import MapView from "react-native-map-clustering";
 import Colors from "@/constants/Colors";
+import AppLoader from "@/components/AppLoader";
 
 
 
@@ -29,6 +30,7 @@ const ListingMap = ({category}: Props) => {
     const [icon, setIcon] = useState([]);
 
     const router = useRouter();
+
     const onMarkerSeleced = (item: any) => {
         router.push(`/listing/${item.sportCourtId}`);
     }
@@ -60,7 +62,7 @@ const ListingMap = ({category}: Props) => {
             case "Football":
                 return "soccer"
             case "Table tennis":
-              return "table-tenis"
+              return "table-tennis"
             default:
                 return sport.toLocaleLowerCase();
           }
@@ -90,6 +92,7 @@ const ListingMap = ({category}: Props) => {
     }
 
     return (
+        <>
         <View style={StyleSheet.absoluteFill}>
             <MapView style={styles.map} showsUserLocation={true}
             animationEnabled={false}
@@ -115,6 +118,8 @@ const ListingMap = ({category}: Props) => {
                 ))}
             </MapView>
         </View>
+        {loading && <AppLoader/>}
+        </>
     )
 };
 

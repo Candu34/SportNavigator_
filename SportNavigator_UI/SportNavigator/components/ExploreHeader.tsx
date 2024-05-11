@@ -27,7 +27,9 @@ const categories = [
     {
         name: 'Table tennis',
         icon: 'table-tennis',
-    }
+    },
+    {name: '',
+    icon: '',},
 ]
 
 

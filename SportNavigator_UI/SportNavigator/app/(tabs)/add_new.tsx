@@ -1,14 +1,15 @@
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from "react-native";
-import React, {useState} from "react";;
+import { View,ActivityIndicator, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from "react-native";
+import React, {useState} from "react";
 import { useNavigation } from '@react-navigation/native';
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useRoute } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import AppLoader from "@/components/AppLoader";
 
 
 const Page = () => {
@@ -18,6 +19,7 @@ const [images, setImages] = useState(null);
 const [open, setOpen] = useState(false);
 const [open1, setOpen1] = useState(false);
 const [courtType, setCourtType] = useState(null);
+const [loading, setLoading] = useState(false);
 const [sport, setSport] = useState(null);
 const [sports, setSports] = useState([
     {label: 'Basketball', value: 'BASKETBALL'},
@@ -47,8 +49,6 @@ const handleDescriptionChange = (text:string) => {
     setDescription(text);
 };
 
-console.log(markerPosition);
-
 React.useLayoutEffect(() => {
     navigation.setOptions({
         title: '', 
@@ -67,12 +67,11 @@ React.useLayoutEffect(() => {
 }, [navigation]);
 
 const handleSubmit = () => {
-
-    if (!name || !description || !sport || !courtType || !markerPosition.latitude || !markerPosition.longitude || !images.length) {
-        Alert.alert('Error', 'Please fill in all fields');
+    if (!name || !description || !sport || !courtType || !markerPosition.latitude || !markerPosition.longitude || !images || !images.length) {
+        Alert.alert('Error', 'Please fill in all fields and select images');
         return;
     }
-
+    setLoading(true);
     const sportCourtDTO = {
         name: name,
         description: description,
@@ -92,14 +91,28 @@ const handleSubmit = () => {
         body: JSON.stringify(sportCourtDTO)
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to create sport court');
+        setLoading(false);
+        if (response.ok) {
+            return response.json(); // Parse response body as JSON
+        } else {
+            return response.json().then(errorData => {
+                throw new Error(errorData.message); 
+            });
         }
-        return response.json();
+    })
+    .then(data => {
+        setName('');
+        setDescription('');
+        setImages(null);
+        setSport(null);
+        setCourtType(null);
+        Alert.alert('Success');
+        router.navigate("/listing/" + data);
     })
     .catch(error => {
-        console.error('Error creating sport court:', error);
-        Alert.alert('Error', 'Failed to create sport court. Please try again later.');
+        setLoading(false);
+        console.error('Error:', error);
+        Alert.alert('Coordonate outside the app perimeter'); 
     });
 };
 
@@ -107,11 +120,18 @@ const handleSubmit = () => {
 
 const pickImage = async () => {
     let arr = [];
+
+
+    let { status } = await ImagePicker.requestCameraPermissionsAsync(); // Use requestCameraPermissionsAsync
+  if (status !== 'granted') {
+    Alert.alert('Error', 'Sorry, we need camera roll permissions to choose images.');
+    return;
+  }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       aspect: [16, 9],
-      quality: 50,
+      quality: 1,
       allowsMultipleSelection: true,
       selectionLimit: 4,
       base64: true,
@@ -127,6 +147,7 @@ const pickImage = async () => {
   };
 
     return (
+        <>
         <View style={[styles.container, {marginBottom: 30}]}>
             <TextInput autoCapitalize='none' placeholder='Name'
                         style={[defaultStyles.inputField, {marginBottom: 15, fontFamily: 'pop'}]}
@@ -152,7 +173,7 @@ const pickImage = async () => {
                         color: Colors.grey,
                     }}
                     placeholder={'Choose sport'}
-                    zIndex={9999}
+                    zIndex={99}
                 />
                 <DropDownPicker
                     style={[defaultStyles.inputField, {marginBottom: 20}]}
@@ -168,7 +189,7 @@ const pickImage = async () => {
                         color: Colors.grey,
                     }}
                     placeholder={'Choose court type'}
-                    zIndex={9998}
+                    zIndex={98}
                 />
             <View style={{gap: 20}}>
             <TouchableOpacity style={[defaultStyles.btn, {flexDirection: 'row', gap: 10}]} 
@@ -194,6 +215,8 @@ const pickImage = async () => {
                 </TouchableOpacity>
             </View>
         </View>
+        {loading && <AppLoader/>}
+        </>
     )
 }
 
@@ -252,10 +275,6 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 1, height: 1 }, 
         textShadowRadius: 2, 
     },
-    image: {
-        width: 200,
-        height: 200,
-      },
 })
 
 export default Page

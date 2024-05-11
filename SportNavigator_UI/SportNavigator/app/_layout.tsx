@@ -95,6 +95,19 @@ const isSignedIn = false;
             </TouchableOpacity> 
           )
         }}/>
+        <Stack.Screen name="(modals)/addEvent" options={{
+          headerTitleStyle: {
+            fontFamily: 'pop-sb'
+          },
+          headerTitle: "Create event",
+          headerTitleAlign: 'center',
+          presentation: 'fullScreenModal',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28}/>
+            </TouchableOpacity> 
+          )
+        }}/>
       </Stack>
   );
 }
