@@ -28,7 +28,7 @@ public class SportCourtController {
 
     @PostMapping()
     @ResponseBody()
-    public ResponseEntity<HttpStatus> save(@RequestBody @Valid SportCourtDTO sportCourtDTO,
+    public ResponseEntity<Long> save(@RequestBody @Valid SportCourtDTO sportCourtDTO,
                                            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -48,8 +48,8 @@ public class SportCourtController {
         }
 
         SportCourt sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
-        sportCourtService.save(sportCourt);
-        return ResponseEntity.ok(HttpStatus.OK);
+        Long sportCourtId = sportCourtService.save(sportCourt);
+        return ResponseEntity.ok(sportCourtId);
     }
 
     @GetMapping()
