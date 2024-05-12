@@ -61,7 +61,7 @@ const ListingMap = ({category}: Props) => {
         switch(sport) {
             case "Football":
                 return "soccer"
-            case "Table tennis":
+            case "Table_tennis":
               return "table-tennis"
             default:
                 return sport.toLocaleLowerCase();
