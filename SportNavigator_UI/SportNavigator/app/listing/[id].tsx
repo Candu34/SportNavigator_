@@ -91,10 +91,8 @@ const Page = () => {
       if (response.ok) {
         const data = await response.json();
         setActivities(data);
-        console.error('Failed to fetch events count');
       }
     } catch (error) {
-      // Handle any network errors or exceptions
       console.error('Error fetching events count:', error);
     }
   }
@@ -123,6 +121,9 @@ const Page = () => {
       ),
     });
   }, [isFavorite])
+
+
+
 
     const imageAnimatedStyle = useAnimatedStyle(() => {
         return {
@@ -169,11 +170,11 @@ const Page = () => {
 
     useEffect(() => {
       toggleFavorite();
-    }, [isFavorite]); 
+    }, [item]); 
   
     useEffect(() => {
       getNumberOfEvents();
-    }, []);
+    }, [item]);
     
   useEffect(() => {
     const INITIAL_REGION_ITEM = {
