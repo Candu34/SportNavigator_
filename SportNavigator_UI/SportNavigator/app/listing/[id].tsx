@@ -232,17 +232,16 @@ const Page = () => {
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb', textDecorationLine: 'underline'}}>{activities}</Text>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb'}}>Upcoming activities</Text>
                   </TouchableOpacity>
-                  <Link style={defaultStyles.btn}
+                  <Link style={defaultStyles.btn} asChild
                       href={{
                         pathname: "/(modals)/addEvent",
                         params: { id: item.id},
                       }}
                     >
-                      <Text style={defaultStyles.btnText}>Add Event</Text>
+                        <TouchableOpacity style={defaultStyles.btn} >
+                          <Text style={[defaultStyles.btnText, {paddingHorizontal: 10}]}>Add activity</Text>
+                        </TouchableOpacity>
                     </Link>
-                  {/* <TouchableOpacity style={defaultStyles.btn} onPress={() => {router.push({pathname: "/(modals)/addEvent", params:  item.id   })}}>
-                    <Text style={[defaultStyles.btnText, {paddingHorizontal: 10}]}>Add activity</Text>
-                  </TouchableOpacity> */}
                 </View>
             </Animated.View>
         </View>
