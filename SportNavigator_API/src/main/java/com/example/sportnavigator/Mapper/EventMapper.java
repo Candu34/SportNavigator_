@@ -22,10 +22,8 @@ public class EventMapper {
     public Event EnventDTOToEvent(EventDTO eventDTO){
         Event event = new Event();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        SportCourt sportCourt = sportCourtService.getOne(eventDTO.getSportCourtID());
-        System.out.println(eventDTO.getSportCourtID());
-        System.out.println(eventDTO.getUserId());
-        User user = userService.getUserById(eventDTO.getUserId());
+        SportCourt sportCourt = sportCourtService.getOne((Long)eventDTO.getSportCourtID());
+        User user = userService.getUserById((Long)eventDTO.getUserId());
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
         event.setSportCourt(sportCourt);

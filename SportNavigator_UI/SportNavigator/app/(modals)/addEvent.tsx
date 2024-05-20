@@ -1,36 +1,76 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform} from "react-native";
-import React, {useState, useEffect} from "react";
-import { Link, useRouter } from "expo-router";
-import { useNavigation } from '@react-navigation/native';
-import Colors from "@/constants/Colors";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Modal} from "react-native";
+import React, {useState} from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { defaultStyles } from "@/constants/Styles";
 import { useRoute } from '@react-navigation/native';
-import  DateTimePicker  from "@react-native-community/datetimepicker";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from "@/constants/Colors";
+import DatePicker from 'react-native-modern-datepicker';
+import AppLoader from "@/components/AppLoader";
+
+const USER_ID = 1;
+
 
 const Page = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [date, setDate] = useState(new Date);
-    const [mode, setMode] = useState();
-    const [show, setShow] = useState(false);
-    const [text, setText] = useState('');
+    const [date, setDate] = useState("");
+    const [showDateTimePicker, setShowDateTimePicker] = useState(false);
+    const [startDate, setStartDate] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-    const navigation = useNavigation();
-    const route = useRoute();
-    const courtId = route.params?.courtId;
+    const params = useLocalSearchParams();
+    const courtId = params.id;
+    console.log(courtId);
 
-    const onChange = (event, selectdDate) => {
-        const currentDate = selectdDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-        
-    }
-
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    }
+    const handleSubmit = () => {
+        if (!name || !description || !date) {
+            Alert.alert('Error', 'Please fill in all fields and select a date');
+            return;
+        }
+        setLoading(true);
+    
+        const eventDTO = {
+            name: name,
+            description: description,
+            sportCourtID: courtId, 
+            userId: USER_ID,
+            event_time: date,
+        };
+    
+        console.log(eventDTO);
+        fetch('https://3q55nqgg-8080.euw.devtunnels.ms/api/events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eventDTO)
+        })
+        .then(response => {
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message);
+                });
+            }
+        })
+        .then(data => {
+            setName('');
+            setDescription('');
+            setDate("");
+            Alert.alert('Success');
+            router.navigate("/listing/" + courtId);
+        })
+        .catch(error => {
+            setLoading(false);
+            console.error('Error:', error);
+            Alert.alert('Error', error.message); 
+        });
+    };
+    
 
     const handleNameChange = (text:string) => {
         setName(text);
@@ -39,8 +79,26 @@ const Page = () => {
     const handleDescriptionChange = (text:string) => {
         setDescription(text);
     };
+
+    const handleOnSelectedChange = (slectedDate:any) => {
+        setDate(getFormattedDateTime(slectedDate));
+        console.log(getFormattedDateTime(slectedDate));
+    }
+
+    const handleOnPressDateTime = () => {
+        setShowDateTimePicker(!showDateTimePicker);
+    }
+
+    function getFormattedDateTime(dateString: string) {
+        const [datePart, timePart] = dateString.split(' ');
+        const [year, month, day] = datePart.split('/');
+        const [hours, minutes] = timePart.split(':');
+      
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
     
     return (
+        <>
     <View style={styles.container}>
         <View style={styles.container}>
             <TextInput autoCapitalize='none' placeholder='Name'
@@ -53,11 +111,60 @@ const Page = () => {
                             value={description}
                             style={[defaultStyles.inputField, {marginBottom: 20, fontFamily: 'pop', height: 80}]}
                             onChangeText={handleDescriptionChange}/>
+            <TouchableOpacity onPress={handleOnPressDateTime}  style={[defaultStyles.btn, {flexDirection: 'row', gap: 20 }]}>
+                <MaterialCommunityIcons name="timetable" size={24} color="white" />
+                <Text style={defaultStyles.btnText}>Select date and time</Text>
+            </TouchableOpacity>
+            <View style={styles.seperatorView}>
+                <View style={{borderBottomColor: '#000',
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        flex: 1,
+                }}/>
+            </View>
+                <TouchableOpacity  
+                    onPress={handleSubmit}
+                    style={defaultStyles.btn}>
+                    <Text style={defaultStyles.btnText}>Add Event</Text>
+                </TouchableOpacity>
         </View>
         <View>
-            
+            <Modal 
+            animationType="slide"
+            transparent={true}
+            visible={showDateTimePicker}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+
+                        <DatePicker
+                             onSelectedChange={date => handleOnSelectedChange(date as any)}
+                             minuteInterval={5}
+                             options={{
+                                defaultFont: 'pop-sb',
+                                headerFont: 'pop-b',
+                                backgroundColor: '#080516',
+                                textHeaderColor: '#469ab6',
+                                textDefaultColor: '#fff',
+                                selectedTextColor: '#fff',
+                                mainColor: Colors.primary,
+                                textSecondaryColor: '#469ab6',
+                                borderColor: 'rgba(122,146, 165, 0.1)',
+                             }}
+                        />
+
+
+                        <TouchableOpacity  onPress={handleOnPressDateTime}>
+                            <Text style={defaultStyles.btnText}>
+                                Close
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     </View>
+         {loading && <AppLoader/>}
+    </>
     )
 }
 
@@ -66,8 +173,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 26, 
+        paddingTop: 70,
     },
-    seperatorView:{
+      btnOutlineText: {
+        color: '#000',
+        fontSize: 16,
+        fontFamily: 'pop-sb',
+      },
+      seperatorView:{
         flexDirection: 'row',
         gap: 10,
         alignItems: 'center',
@@ -79,43 +192,28 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
     },
-    btnOutline: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: Colors.grey,
-        height: 50,
-        borderRadius: 8,
+    centeredView: {
+        flex: 1, 
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-      },
-      btnOutlineText: {
-        color: '#000',
-        fontSize: 16,
-        fontFamily: 'pop-sb',
-      },
-      headerLeft: {
-        marginLeft: 30,
-        marginTop: 40,
-        paddingBottom: 20,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        gap: -10,
-        borderBottomEndRadius: 20,
-        shadowColor: 'rgba(0, 0, 0, 0.5)', 
-        shadowOffset: { width: 0, height: 5 }, 
-        shadowOpacity: 0.8, 
-        shadowRadius: 4, 
+        backgroundColor: '#fff',
     },
-    title: {
-        fontSize: 40,
-        fontFamily: 'pop-b',
-        color: '#000000',
-        textShadowColor: 'rgba(0, 0, 0, 0.25)', 
-        textShadowOffset: { width: 1, height: 1 }, 
-        textShadowRadius: 2, 
-    }
+    modalView: {
+        margin: 20,
+        backgroundColor: "#080516",
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        padding: 35,
+        width: '90%',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
 })
 export default Page;

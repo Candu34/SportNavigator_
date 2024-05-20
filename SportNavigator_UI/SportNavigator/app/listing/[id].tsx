@@ -34,11 +34,11 @@ const Page = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [intialRegion, setInitialRegion] = useState(INITIAL_REGION_ROMANIA);
   const [isFavorite, setIsFavorite] = useState(); 
-  const [base64Image, setBase64Image] = useState<string>('');
   const [activities, setActivities] = useState<string>('0');
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const navigation = useNavigation();
+  
 
   const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts/'+id;
   const router = useRouter();
@@ -188,7 +188,6 @@ const Page = () => {
   }, []);
 
 
-
     return(
         <View style={styles.container}>
             <Animated.ScrollView ref={scrollRef}
@@ -233,9 +232,17 @@ const Page = () => {
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb', textDecorationLine: 'underline'}}>{activities}</Text>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb'}}>Upcoming activities</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={defaultStyles.btn} onPress={() => {router.navigate("/(modals)/addEvent")}}>
+                  <Link style={defaultStyles.btn}
+                      href={{
+                        pathname: "/(modals)/addEvent",
+                        params: { id: item.id},
+                      }}
+                    >
+                      <Text style={defaultStyles.btnText}>Add Event</Text>
+                    </Link>
+                  {/* <TouchableOpacity style={defaultStyles.btn} onPress={() => {router.push({pathname: "/(modals)/addEvent", params:  item.id   })}}>
                     <Text style={[defaultStyles.btnText, {paddingHorizontal: 10}]}>Add activity</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
             </Animated.View>
         </View>

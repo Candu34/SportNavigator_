@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { Link, Stack } from "expo-router";
 import ExploreHeader from "@/components/ExploreHeader";
 import ListingMap from "@/components/ListingMap";
-import Listings from "@/components/Listings";
-import ListingBottomSheet from "@/components/ListingBottomSheet";
 
 const Page = () => {
 const [category, setCategory] = useState('Basketball')

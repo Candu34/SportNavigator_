@@ -72,6 +72,7 @@ const handleSubmit = () => {
         return;
     }
     setLoading(true);
+    
     const sportCourtDTO = {
         name: name,
         description: description,

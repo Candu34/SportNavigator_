@@ -43,8 +43,7 @@ const Page = () => {
       });
 
       const onSelectLocation = () => {
-        navigation.navigate('add_new', { markerPosition });
-       
+        navigation.navigate('add_new', { markerPosition }); 
     };
 
     useEffect(() => {
