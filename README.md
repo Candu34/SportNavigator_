@@ -89,10 +89,6 @@ classDiagram
   UserFavoriteCourt "0..*" --> "1" Court : favorites<br>
   
 
-//### S.O.L.I.D Principles
-//- **Single-responsibility Principle**
-//### Design patterns
-//- **Singleton**
 
   
 
