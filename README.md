@@ -18,7 +18,10 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - **Favorites**: Keep track of your favorite field to play.
 - **Search Functionality**: Easily search for events, teams, and players.          
 
-## UML Diagram
+
+## Architecture
+
+### UML Diagram
 
 ```mermaid
 classDiagram
