@@ -1,4 +1,6 @@
-# SportNavigator_
+# SportNavigator (Work in Progress)
+
+**Note: This README.md file is a work in progress and may be subject to changes.**
 
 SportNavigator_ is a web application designed to help sports enthusiasts navigate and discover sports courts, teammates, and events. It provides an intuitive interface to explore various sports categories, view detailed information about events, and keep track of favorite places to play.
 
@@ -6,9 +8,7 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - [Features](#features)
 - [Architecture](#architecture)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+
     
 ## Features
 - **Discover new sports courts**: View detailed information about sports courts.
