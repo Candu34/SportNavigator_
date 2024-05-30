@@ -88,5 +88,40 @@ classDiagram
     Court "1" --> "0..*" Review : reviewed by
     UserFavoriteCourt "0..*" --> "1" Court : favorites
 
+# Application Architecture
+
+## Component Diagram
+
+```mermaid
+graph TD
+    subgraph Backend [Spring Boot Backend]
+        API[RESTful API]
+        DB[(Database)]
+        Auth[Authentication Service]
+        UserService[User Service]
+        EventService[Event Service]
+        CourtService[Court Service]
+    end
+
+    subgraph Frontend [React Native Frontend]
+        UI[User Interface]
+        AuthComponent[Authentication Component]
+        EventComponent[Event Component]
+        CourtComponent[Court Component]
+        UserComponent[User Component]
+    end
+
+    UI -->|API Requests| API
+    AuthComponent -->|API Requests| API
+    EventComponent -->|API Requests| API
+    CourtComponent -->|API Requests| API
+    UserComponent -->|API Requests| API
+
+    API -->|Database Queries| DB
+    API -->|User Management| UserService
+    API -->|Event Management| EventService
+    API -->|Court Management| CourtService
+    API -->|Authentication| Auth
+
 
 
