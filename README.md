@@ -4,7 +4,7 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 
 ## Table of Contents
 - [Features](#architecture)
-- [Architecture](#installation)
+- [Architecture](#architecture)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -18,23 +18,22 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - **Favorites**: Keep track of your favorite field to play.
 - **Search Functionality**: Easily search for events, teams, and players.
 
-## Architecture
 # UML Diagram
 
 ```mermaid
 classDiagram
     class User {
         bigint user_id
-        varchar(255) email
-        varchar(30) first_name
-        varchar(30) last_name
-        timestamp(6) date_of_created
+        varchar email
+        varchar first_name
+        varchar last_name
+        timestamp date_of_created
     }
     class UserImage {
         bigint id
         bigint user_id
         oid bytes
-        varchar(255) mime
+        varchar mime
     }
     class UserFavoriteCourt {
         bigint user_id
@@ -42,31 +41,31 @@ classDiagram
     }
     class Court {
         bigint id
-        varchar(255) name
+        varchar name
         text description
-        varchar(32) sport
-        varchar(255) court_type
-        timestamp(6) date_of_creating
+        varchar sport
+        varchar court_type
+        timestamp date_of_creating
         bigint user_user_id
     }
     class CourtImage {
         bigint id
         bigint sport_court_id
         oid bytes
-        varchar(255) mime
+        varchar mime
     }
     class Coordinate {
         bigint id
         bigint court_id
-        double precision latitude
-        double precision longitude
+        double latitude
+        double longitude
     }
     class Event {
         bigint id
-        varchar(255) name
+        varchar name
         text description
-        timestamp(6) event_time
-        timestamp(6) created_at
+        timestamp event_time
+        timestamp created_at
         bigint sport_court_id
         bigint user_user_id
     }
@@ -88,10 +87,6 @@ classDiagram
     Court "1" --> "0..*" Event : hosts
     Court "1" --> "0..*" Review : reviewed by
     UserFavoriteCourt "0..*" --> "1" Court : favorites
-    
 
-### Prerequisites
-- Python 3.8 or higher
-- pip (Python package installer)
 
 
