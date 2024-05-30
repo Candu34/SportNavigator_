@@ -87,11 +87,12 @@ classDiagram
   Court "1" --> "0..*" Event : hosts
   Court "1" --> "0..*" Review : reviewed by
   UserFavoriteCourt "0..*" --> "1" Court : favorites<br>
+  
 
+//### S.O.L.I.D Principles
+//- **Single-responsibility Principle**
+//### Design patterns
+//- **Singleton**
 
-![image](https://github.com/Candu34/SportNavigator_/assets/126687929/e4f1898f-2948-471f-a90d-76615bf14c91)
-
-
-
-
+  
 
