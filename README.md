@@ -1,9 +1,9 @@
-# SportNavigator
+# SportNavigator_
 
-SportNavigator_ is a web application designed to help sports enthusiasts navigate and discover sports courts, teammates, and events. It provides an intuitive interface to explore various sports categories, view detailed information about events, and keep track of favorite place to play.
+SportNavigator_ is a web application designed to help sports enthusiasts navigate and discover sports courts, teammates, and events. It provides an intuitive interface to explore various sports categories, view detailed information about events, and keep track of favorite places to play.
 
 ## Table of Contents
-- [Features](#architecture)
+- [Features](#features)
 - [Architecture](#architecture)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -14,11 +14,11 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - **Discover new sports courts**: View detailed information about sports courts.
 - **Event Discovery**: Browse upcoming and past sports events.
 - **Add courts**: Add new places that no one knows about.
-- **Create events**: Create new events to find team and teammates.
+- **Create events**: Create new events to find a team and teammates.
 - **Favorites**: Keep track of your favorite field to play.
-- **Search Functionality**: Easily search for events, teams, and players.
+- **Search Functionality**: Easily search for events, teams, and players.          
 
-# UML Diagram
+## UML Diagram
 
 ```mermaid
 classDiagram
@@ -86,13 +86,11 @@ classDiagram
     Court "1" --> "0..*" Coordinate : located at
     Court "1" --> "0..*" Event : hosts
     Court "1" --> "0..*" Review : reviewed by
-    UserFavoriteCourt "0..*" --> "1" Court : favorites
+    UserFavoriteCourt "0..*" --> "1" Court : favorites       
+      
 
-# Application Architecture
 
-## Component Diagram
 
-```mermaid
 graph TD
     subgraph Backend [Spring Boot Backend]
         API[RESTful API]
@@ -122,6 +120,3 @@ graph TD
     API -->|Event Management| EventService
     API -->|Court Management| CourtService
     API -->|Authentication| Auth
-
-
-
