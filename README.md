@@ -92,14 +92,14 @@ classDiagram
 
 
 graph TD
-    subgraph Backend [Spring Boot Backend]
-        API[RESTful API]
-        DB[(Database)]
-        Auth[Authentication Service]
-        UserService[User Service]
-        EventService[Event Service]
-        CourtService[Court Service]
-    end
+  subgraph Backend[Spring Boot Backend]
+    API[RESTful API]
+    DB[(Database)]
+    Auth[Authentication Service]
+    UserService[User Service]
+    EventService[Event Service]
+    CourtService[Court Service]
+  end
 
     subgraph Frontend [React Native Frontend]
         UI[User Interface]
