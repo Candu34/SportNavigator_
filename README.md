@@ -20,6 +20,13 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 
 
 ## Architecture
+### S.O.L.I.D Principles
+- **Single-responsibility Principle**
+
+
+### Design patterns
+- **Singleton**
+
 
 ### UML Diagram
 
