@@ -2,8 +2,10 @@ package com.example.sportnavigator.Controllers;
 
 
 import com.example.sportnavigator.DTO.EventDTO;
+import com.example.sportnavigator.DTO.EventsResponse;
 import com.example.sportnavigator.Mapper.EventMapper;
 import com.example.sportnavigator.Models.Event;
+import com.example.sportnavigator.Repository.EventRepository;
 import com.example.sportnavigator.Service.EventService;
 import com.example.sportnavigator.Utils.Excetions.EventNotCreatedException;
 import jakarta.validation.Valid;
@@ -71,26 +73,23 @@ public class EventController {
 
     @GetMapping("/user/{userId}")
     @ResponseBody()
-    public List<EventDTO> findByUserId(@PathVariable Long userId){
-        List<Event> events = eventService.findByUserId(userId);
-        List<EventDTO> eventDTOS = new ArrayList<>();
-        for (Event event : events) {
-            eventDTOS.add(eventMapper.EventToEventDTO(event));
-        }
-        return eventDTOS;
+    public ResponseEntity<EventsResponse> findByUserId(@PathVariable Long userId,
+                                                       @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                                       @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize){
+        EventsResponse eventsResponse = eventService.findByUserId(userId, pageNo, pageSize);
+        return new ResponseEntity<>(eventsResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/sportCourt/{sportCourtId}")
+    @GetMapping("/court/{courtId}")
     @ResponseBody()
-    public List<EventDTO> findBySportCourtId(@PathVariable Long sportCourtId){
-        List<Event> events = eventService.findBySportCourtId(sportCourtId);
-        List<EventDTO> eventDTOS = new ArrayList<>();
-        for (Event event : events) {
-            eventDTOS.add(eventMapper.EventToEventDTO(event));
-        }
-
-        return eventDTOS;
+    public ResponseEntity<EventsResponse> findByCourtId(@PathVariable Long courtId,
+                                                       @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                                       @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize){
+        EventsResponse eventsResponse = eventService.findBySportCourtId(courtId, pageNo, pageSize);
+        return new ResponseEntity<>(eventsResponse, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/count/{sportCourtId}")
     @ResponseBody()

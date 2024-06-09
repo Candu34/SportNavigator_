@@ -1,10 +1,17 @@
 package com.example.sportnavigator.Service;
 
+import com.example.sportnavigator.DTO.EventDTO;
+import com.example.sportnavigator.DTO.EventsResponse;
+import com.example.sportnavigator.DTO.ResponeInfo.ResponseInfo;
+import com.example.sportnavigator.Mapper.EventMapper;
 import com.example.sportnavigator.Models.Event;
 import com.example.sportnavigator.Repository.EventRepository;
 import com.example.sportnavigator.Utils.Excetions.EventNotFoundException;
 import com.example.sportnavigator.Utils.Excetions.UnexpectedDateTimeException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +25,7 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
 
     @Transactional(readOnly = false)
     public void save(Event event){ LocalDateTime now = LocalDateTime.now();
@@ -46,16 +54,52 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public List<Event> findBySportCourtId(Long sportCourtId){
-        return eventRepository.getEventsBySportCourtId(sportCourtId);
+    public EventsResponse findBySportCourtId(Long sportCourtId, int pageNo, int pageSize){
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        ResponseInfo responseInfo = new ResponseInfo();
+        Page<Event> eventsPage = eventRepository.getEventsBySportCourtId(sportCourtId, pageable);
+        EventsResponse eventsResponse = new EventsResponse();
+        List<EventDTO> eventDTOS = eventsPage.stream()
+                .map(eventMapper::EventToEventDTO)
+                .toList();
+
+        responseInfo.setPageNo(eventsPage.getNumber());
+        responseInfo.setPageSize(eventsPage.getSize());
+        responseInfo.setTotalElements(eventsPage.getTotalElements());
+        responseInfo.setLast(eventsPage.isLast());
+        responseInfo.setTotalPages(eventsPage.getTotalPages());
+
+        eventsResponse.setEventsDTO(eventDTOS);
+        eventsResponse.setResponseInfo(responseInfo);
+
+
+        return eventsResponse;
     }
 
     public Long countBySportCourtId(Long id){
         return eventRepository.countBySportCourt_Id(id);
     }
 
-    public List<Event> findByUserId(Long UserId){
-        return eventRepository.getEventsByUserId(UserId);
+    public EventsResponse findByUserId(Long userId, int pageNo, int pageSize){
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        ResponseInfo responseInfo = new ResponseInfo();
+        Page<Event> eventsPage = eventRepository.getEventsByUserId(userId, pageable);
+        EventsResponse eventsResponse = new EventsResponse();
+        List<EventDTO> eventDTOS = eventsPage.stream()
+                .map(eventMapper::EventToEventDTO)
+                .toList();
+
+        responseInfo.setPageNo(eventsPage.getNumber());
+        responseInfo.setPageSize(eventsPage.getSize());
+        responseInfo.setTotalElements(eventsPage.getTotalElements());
+        responseInfo.setLast(eventsPage.isLast());
+        responseInfo.setTotalPages(eventsPage.getTotalPages());
+
+        eventsResponse.setEventsDTO(eventDTOS);
+        eventsResponse.setResponseInfo(responseInfo);
+
+
+        return eventsResponse;
     }
 
 

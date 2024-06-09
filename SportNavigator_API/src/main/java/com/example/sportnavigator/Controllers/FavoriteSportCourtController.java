@@ -16,10 +16,10 @@ public class FavoriteSportCourtController {
 
     @GetMapping()
     public ResponseEntity<FavoriteSportCourtResponse> findAllByUserId(
-            @RequestParam(value = "userId") Long userId,
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize
-    ) {
+                @RequestParam(value = "userId") Long userId,
+                @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+
         FavoriteSportCourtResponse favoriteSportCourtResponse =
                 favoriteSportCourtService.findAllByUserId(userId, pageNo, pageSize);
         return new ResponseEntity<>(favoriteSportCourtResponse, HttpStatus.OK);
