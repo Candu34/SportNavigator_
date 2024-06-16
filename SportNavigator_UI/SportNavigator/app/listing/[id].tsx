@@ -15,6 +15,9 @@ import * as Location from 'expo-location';
 import MapView from "react-native-maps";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { defaultStyles } from "@/constants/Styles";
+import AppLoader from "@/components/AppLoader";
+
+
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
@@ -103,15 +106,17 @@ const Page = () => {
         <Animated.View style={[styles.header, headerAnimatedStyle]}/>
       ),
       headerRight: () => (
+        
         <View style={styles.bar}>
-          <TouchableOpacity style={styles.roundButton} onPress={shareCourt}>
-            <Ionicons name='share-outline' size={22} color={'#000'}/>
-          </TouchableOpacity>
-          <TouchableOpacity 
+          {!loading && <TouchableOpacity style={styles.roundButton} onPress={shareCourt}>
+            <Ionicons   name='share-outline' size={22} color={'#000'}/>
+          </TouchableOpacity>}
+          {!loading && <TouchableOpacity 
             style={styles.roundButton} 
             onPress={() => addToFavorite(item.id)}>
             <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? 'red' : '#000'}/>
-          </TouchableOpacity>
+          </TouchableOpacity> }
+        
         </View>
       ),
       headerLeft: () => (
@@ -120,7 +125,7 @@ const Page = () => {
         </TouchableOpacity>
       ),
     });
-  }, [isFavorite])
+  }, [isFavorite,loading])
 
 
 
@@ -189,6 +194,7 @@ const Page = () => {
 
 
     return(
+      <>
         <View style={styles.container}>
             <Animated.ScrollView ref={scrollRef}
             scrollEventThrottle={16}>
@@ -237,8 +243,9 @@ const Page = () => {
                     </Link>
                 </View>
             </Animated.View>)}
-
         </View>
+        {loading && <AppLoader/>}
+        </>
     )
 }
 
@@ -279,7 +286,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 10
+        gap: 10,
     },
     roundButton: {
         width: 40,
@@ -306,6 +313,9 @@ const styles = StyleSheet.create({
       height: 100,
       width: 300,
       borderRadius: 30,
+    },
+    icon: {
+      zIndex: 800,
     }
 });
 
