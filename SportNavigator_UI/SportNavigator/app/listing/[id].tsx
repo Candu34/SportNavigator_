@@ -211,27 +211,20 @@ const Page = () => {
                     </View>
                     <Text style={styles.description}>{item.description}</Text>
                 </View>
-                {/* {isLoaded && (<View style={{flex: 1, alignItems: 'center', alignContent: 'center'}}>
-                  <TouchableOpacity style={styles.mapLink}>
-                    <MapView style={styles.mapView}
-                          provider={PROVIDER_GOOGLE}
-                          showsMyLocationButton={false}
-                          showsUserLocation={false}
-                          animationEnabled={false}>
-
-                          
-                      </MapView>
-                  </TouchableOpacity>
-                </View>)} */}
-
             </Animated.ScrollView>
 
-            <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(200)} >
+             {isLoaded && (<Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(200)} >
                 <View style={{flexDirection: 'row', gap: 40 , alignItems: 'center'}}>
+                  <Link asChild href={{
+                    pathname: "/(modals)/events",
+                    params: {id: item.id}
+                  }}> 
                   <TouchableOpacity style={{flexDirection: 'row', gap: 10}}>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb', textDecorationLine: 'underline'}}>{activities}</Text>
                       <Text style={{fontSize: 16, fontFamily: 'pop-sb'}}>Upcoming activities</Text>
                   </TouchableOpacity>
+                  </Link>
+                  
                   <Link style={defaultStyles.btn} asChild
                       href={{
                         pathname: "/(modals)/addEvent",
@@ -243,7 +236,8 @@ const Page = () => {
                         </TouchableOpacity>
                     </Link>
                 </View>
-            </Animated.View>
+            </Animated.View>)}
+
         </View>
     )
 }

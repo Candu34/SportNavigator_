@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Modal} from
 import React, {useState} from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { defaultStyles } from "@/constants/Styles";
-import { useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from "@/constants/Colors";
 import DatePicker from 'react-native-modern-datepicker';
@@ -39,7 +38,6 @@ const Page = () => {
             event_time: date,
         };
     
-        console.log(eventDTO);
         fetch('https://3q55nqgg-8080.euw.devtunnels.ms/api/events', {
             method: 'POST',
             headers: {

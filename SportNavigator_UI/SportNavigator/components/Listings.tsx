@@ -5,6 +5,10 @@ import { Link, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import  Animated, { FadeInLeft, FadeOutLeft }  from "react-native-reanimated";
 
+
+
+
+
 const Listings = () => {
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState([]);
@@ -31,6 +35,7 @@ const Listings = () => {
     };
     
     
+    
     const loadMore = async () => { 
         if (loading){
             return;
@@ -48,7 +53,7 @@ const Listings = () => {
                 const nextUrl = nextPage.replace(/pageNo=\d+/, 'pageNo=' + nextPageNo);
                 setNextPage(nextUrl as any);
     };
-};
+    };
 
 useFocusEffect(
     React.useCallback(() => {
