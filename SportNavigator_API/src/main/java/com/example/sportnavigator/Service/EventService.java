@@ -58,22 +58,7 @@ public class EventService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         ResponseInfo responseInfo = new ResponseInfo();
         Page<Event> eventsPage = eventRepository.getEventsBySportCourtId(sportCourtId, pageable);
-        EventsResponse eventsResponse = new EventsResponse();
-        List<EventDTO> eventDTOS = eventsPage.stream()
-                .map(eventMapper::EventToEventDTO)
-                .toList();
-
-        responseInfo.setPageNo(eventsPage.getNumber());
-        responseInfo.setPageSize(eventsPage.getSize());
-        responseInfo.setTotalElements(eventsPage.getTotalElements());
-        responseInfo.setLast(eventsPage.isLast());
-        responseInfo.setTotalPages(eventsPage.getTotalPages());
-
-        eventsResponse.setEventsDTO(eventDTOS);
-        eventsResponse.setResponseInfo(responseInfo);
-
-
-        return eventsResponse;
+        return getEventsResponse(responseInfo, eventsPage);
     }
 
     public Long countBySportCourtId(Long id){
@@ -84,6 +69,10 @@ public class EventService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         ResponseInfo responseInfo = new ResponseInfo();
         Page<Event> eventsPage = eventRepository.getEventsByUserId(userId, pageable);
+        return getEventsResponse(responseInfo, eventsPage);
+    }
+
+    private EventsResponse getEventsResponse(ResponseInfo responseInfo, Page<Event> eventsPage) {
         EventsResponse eventsResponse = new EventsResponse();
         List<EventDTO> eventDTOS = eventsPage.stream()
                 .map(eventMapper::EventToEventDTO)
@@ -94,7 +83,7 @@ public class EventService {
         responseInfo.setTotalElements(eventsPage.getTotalElements());
         responseInfo.setLast(eventsPage.isLast());
         responseInfo.setTotalPages(eventsPage.getTotalPages());
-
+        responseInfo.setLast(eventsPage.isLast());
         eventsResponse.setEventsDTO(eventDTOS);
         eventsResponse.setResponseInfo(responseInfo);
 
