@@ -42,6 +42,8 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - Spring MVC
 - Postgresql 15
 - Docker
+
+  
 - **Frontend**
 - React Native
 
