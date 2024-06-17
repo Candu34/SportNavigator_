@@ -28,9 +28,11 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 
 ### Design patterns
 - **Singleton**
+- **Visitor**
 
 
-![image](https://github.com/Candu34/SportNavigator_/assets/126687929/e26e1567-90b9-4d35-9ec7-e592c0ff97c3)
+![image](https://github.com/Candu34/SportNavigator_/assets/126687929/a4d1b8d2-3fff-4e2d-ac61-df0b80504425)
+
 
 
 
