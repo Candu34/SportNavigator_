@@ -9,7 +9,7 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - [Architecture](#architecture)
 - [Usage](#usage)
 - [Tech Stack](#techstack)
-
+- [Architectural template](#Architectural_template)
     
 ## Features
 - **Discover new sports courts**: View detailed information about sports courts.
@@ -17,16 +17,18 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - **Add courts**: Add new places that no one knows about.
 - **Create events**: Create new events to find a team and teammates.
 - **Favorites**: Keep track of your favorite field to play.
-- **Search Functionality**: Easily search for events, teams, and players.          
+- **Search Functionality**: Easily search for events, teams, and players. *(in progress)*
+- **Evaluate courts** *(in progress)*
 
 
 ## Architecture
 ### S.O.L.I.D Principles
 - **Single-responsibility Principle**
-
+- **Open-Close**
 
 ### Design patterns
 - **Singleton**
+
 
 ![image](https://github.com/Candu34/SportNavigator_/assets/126687929/e26e1567-90b9-4d35-9ec7-e592c0ff97c3)
 
@@ -46,6 +48,11 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
   
 - **Frontend**
 - React Native
+
+
+
+### Architectural template
+  **Agile**
 
 
 ### UML Diagram
