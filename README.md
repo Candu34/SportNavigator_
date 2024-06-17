@@ -33,7 +33,7 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 
 
 ### Tech Stack
-- **Server Side
+- **Server Side**
 - Java 17
 - Spring Boot 3
 - Maven
@@ -41,7 +41,8 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - Hibernate
 - Spring MVC
 - Postgresql 15
-- **Frontend
+- Docker
+- **Frontend**
 - React Native
 
 
