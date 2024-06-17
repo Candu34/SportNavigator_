@@ -8,6 +8,7 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - [Features](#features)
 - [Architecture](#architecture)
 - [Usage](#usage)
+- [Tech Stack](#techstack)
 
     
 ## Features
@@ -26,6 +27,22 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 
 ### Design patterns
 - **Singleton**
+
+![image](https://github.com/Candu34/SportNavigator_/assets/126687929/e26e1567-90b9-4d35-9ec7-e592c0ff97c3)
+
+
+
+### Tech Stack
+** Server Side
+- Java 17
+- Spring Boot 3
+- Maven
+- Spring Data JPA
+- Hibernate
+- Spring MVC
+- Postgresql 15
+** Frontend
+-React Native
 
 
 ### UML Diagram
