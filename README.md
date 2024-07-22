@@ -2,13 +2,14 @@
 
 **Note: This README.md file is a work in progress and may be subject to changes.**
 
-SportNavigator_ is a web application designed to help sports enthusiasts navigate and discover sports courts, teammates, and events. It provides an intuitive interface to explore various sports categories, view detailed information about events, and keep track of favorite places to play.
+SportNavigator_ is a mobile application designed to help sports enthusiasts navigate and discover sports courts, teammates, and events. It provides an intuitive interface to explore various sports categories, view detailed information about events, and keep track of favorite places to play.
 
 ## Table of Contents
 - [Features](#features)
 - [Architecture](#architecture)
 - [Usage](#usage)
-
+- [Tech Stack](#techstack)
+- [Architectural template](#Architectural_template)
     
 ## Features
 - **Discover new sports courts**: View detailed information about sports courts.
@@ -16,16 +17,44 @@ SportNavigator_ is a web application designed to help sports enthusiasts navigat
 - **Add courts**: Add new places that no one knows about.
 - **Create events**: Create new events to find a team and teammates.
 - **Favorites**: Keep track of your favorite field to play.
-- **Search Functionality**: Easily search for events, teams, and players.          
+- **Search Functionality**: Easily search for events, teams, and players. *(in progress)*
+- **Evaluate courts** *(in progress)*
 
 
 ## Architecture
 ### S.O.L.I.D Principles
 - **Single-responsibility Principle**
-
+- **Open-Close**
 
 ### Design patterns
 - **Singleton**
+- **Visitor**
+
+
+![image](https://github.com/Candu34/SportNavigator_/assets/126687929/a4d1b8d2-3fff-4e2d-ac61-df0b80504425)
+
+
+
+
+### Tech Stack
+- **Server Side**
+- Java 17
+- Spring Boot 3
+- Maven
+- Spring Data JPA
+- Hibernate
+- Spring MVC
+- Postgresql 15
+- Docker
+
+  
+- **Frontend**
+- React Native
+
+
+
+### Architectural template
+  **Agile**
 
 
 ### UML Diagram
