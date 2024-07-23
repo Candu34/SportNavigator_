@@ -2,12 +2,13 @@ package com.example.sportnavigator.Models;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -26,19 +28,13 @@ public class User {
     @Column(name = "user_id")
     private long id;
 
-    @Column(name = "email")
-    @Email
-    @NotNull(message = "Email should not be empty")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "first_name")
-    @NotNull(message = "first name should not be empty")
-    @Size(min = 2, max = 30, message = "First name should be between 2 and 30 characters")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "last_name")
-    @NotNull(message = "last name should not be empty")
-    @Size(min = 2, max = 30, message = "Last name should not be empty")
     private String lastName;
 
     @OneToOne(mappedBy = "user",
@@ -54,9 +50,6 @@ public class User {
                 orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Event> events;
 
-    @Column(name = "date_of_created", nullable = false, updatable = false)
-    private LocalDateTime dateOfCreated;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "user", orphanRemoval = true)
     private List<Review> reviews;
@@ -65,10 +58,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<SportCourt> favoriteSportCourts;
 
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @PrePersist
-    public void init(){
-        this.dateOfCreated = LocalDateTime.now();
-    }
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private LocalDateTime lastUpdated;
+
+
 
 }
