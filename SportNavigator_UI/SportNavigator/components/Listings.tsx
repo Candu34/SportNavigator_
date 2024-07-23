@@ -62,7 +62,7 @@ useFocusEffect(
 );
 
 const addToFavorite = (courtId: string) => {
-    const url = "https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite?userId=1&courtId="+courtId;
+    const url = `/favorite?userId=1&courtId=${courtId}`;
     fetch(url, {
         method: 'POST',
         headers: {

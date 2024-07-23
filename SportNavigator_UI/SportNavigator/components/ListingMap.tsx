@@ -7,7 +7,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import MapView from "react-native-map-clustering";
 import Colors from "@/constants/Colors";
 import AppLoader from "@/components/AppLoader";
-
+import { API_URL } from '@/constants/api_url';
 
 
 interface Props{
@@ -38,7 +38,7 @@ const ListingMap = ({category}: Props) => {
     
 
 
-    const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/coordinate?sport='+category;
+    const item_url = `${API_URL}/coordinate?sport=${category}`;
 
     const fetchItems = async () => {
         try{

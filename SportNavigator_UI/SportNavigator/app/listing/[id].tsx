@@ -16,6 +16,7 @@ import MapView from "react-native-maps";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { defaultStyles } from "@/constants/Styles";
 import AppLoader from "@/components/AppLoader";
+import { API_URL } from "@/constants/api_url";
 
 
 
@@ -43,7 +44,7 @@ const Page = () => {
   const navigation = useNavigation();
   
 
-  const item_url = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/courts/'+id;
+  const item_url = `${API_URL}/courts/${id}`;
   const router = useRouter();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
@@ -59,7 +60,7 @@ const Page = () => {
   }
 
   const addToFavorite = (courtId: string) => {
-    const url = `https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite?userId=1&courtId=`+id;
+    const url = `${API_URL}/favorite?userId=1&courtId=/${id}`;
     fetch(url, {
       method: 'POST',
       headers: {
@@ -82,7 +83,7 @@ const Page = () => {
   }
 
   const toggleFavorite = async () => {
-    const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/favorite/verify?userId=1&courtId=`+item.id);
+    const response = await fetch(`${API_URL}/favorite/verify?userId=1&courtId=${item.id}`);
     const isFavoriteString = await response.text(); 
     const isFavorite = isFavoriteString === "true"; 
     setIsFavorite(isFavorite as any);
@@ -90,7 +91,7 @@ const Page = () => {
 
   const getNumberOfEvents = async () => {
     try {
-      const response = await fetch(`https://3q55nqgg-8080.euw.devtunnels.ms/api/events/count/`+item.id);
+      const response = await fetch(`${API_URL}/events/count/${item.id}`);
       if (response.ok) {
         const data = await response.json();
         setActivities(data);

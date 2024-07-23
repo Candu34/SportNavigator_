@@ -10,6 +10,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import AppLoader from "@/components/AppLoader";
+import { API_URL } from "@/constants/api_url";
 
 
 const Page = () => {
@@ -84,7 +85,7 @@ const handleSubmit = () => {
         longitude: markerPosition.longitude
     };
 
-    fetch('https://3q55nqgg-8080.euw.devtunnels.ms/api/courts', {
+    fetch(`${API_URL}/courts`, {  
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -94,10 +95,10 @@ const handleSubmit = () => {
     .then(response => {
         setLoading(false);
         if (response.ok) {
-            return response.json(); // Parse response body as JSON
+            return response.json(); 
         } else {
             return response.json().then(errorData => {
-                throw new Error(errorData.message); 
+                Alert.alert(errorData.message); 
             });
         }
     })
@@ -113,7 +114,7 @@ const handleSubmit = () => {
     .catch(error => {
         setLoading(false);
         console.error('Error:', error);
-        Alert.alert('Coordonate outside the app perimeter'); 
+        Alert.alert('error', error); 
     });
 };
 
@@ -123,18 +124,17 @@ const pickImage = async () => {
     let arr = [];
 
 
-    let { status } = await ImagePicker.requestCameraPermissionsAsync(); // Use requestCameraPermissionsAsync
+    let { status } = await ImagePicker.requestCameraPermissionsAsync(); 
   if (status !== 'granted') {
     Alert.alert('Error', 'Sorry, we need camera roll permissions to choose images.');
     return;
   }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [16, 9],
       quality: 1,
-      allowsMultipleSelection: true,
-      selectionLimit: 4,
+      allowsMultipleSelection: false,
       base64: true,
     });
 

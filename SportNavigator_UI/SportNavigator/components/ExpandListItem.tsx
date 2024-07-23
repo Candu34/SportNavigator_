@@ -56,7 +56,7 @@ export const ListItem = ({ item }) => {
     const [expanded, setExpanded] = useState(false);
     const [user, setUser] = useState(null);
 
-    const userUrl = 'https://3q55nqgg-8080.euw.devtunnels.ms/api/users/'+item.UserId;
+    const userUrl = `/users/${item.UserId}`;
 
     const fetchItems = async () => {
         try {
@@ -85,7 +85,7 @@ export const ListItem = ({ item }) => {
             <View style={styles.container}>
                   {user && user.image && user.image.data ? (
                   <Image
-                    source={{ uri: `data:${user.image.mime};base64,${user.image.data}` }}
+                    source={{ uri: `data:${user.image.mime};base64,${user.image.data.slice(16)}` }}    //wrong data base format for image 
                     style={styles.image}
                   />
                   ) : (
