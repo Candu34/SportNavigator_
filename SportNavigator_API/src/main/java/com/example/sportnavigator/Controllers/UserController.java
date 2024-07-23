@@ -7,7 +7,6 @@ import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;
 import com.example.sportnavigator.Utils.Excetions.UserNotCreatedException;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
