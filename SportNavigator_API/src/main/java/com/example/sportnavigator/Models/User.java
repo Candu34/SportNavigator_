@@ -43,6 +43,9 @@ public class User {
             orphanRemoval = true, optional = true)
     private UserImage image;
 
+    @Column(name = "password", length = 1000, nullable = false)
+    private String password;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
                 orphanRemoval = false)
     private List<SportCourt> sportCourts;

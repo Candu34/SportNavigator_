@@ -41,6 +41,7 @@ public class UserMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setImage(userImage);
+        user.setPassword(userDTO.getPassword());
 
         return user;
     }

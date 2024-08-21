@@ -17,23 +17,30 @@ public class UserDTO {
     @JsonProperty
     private Long id;
 
-    @Email(message = "wrong email format")
+    @Email(message = "Wrong email format")
     @JsonProperty("email")
     @NotNull
     private String email;
 
-    @NotNull(message = "first_name should not be empty")
+    @NotNull(message = "First name should not be empty")
     @Size(min = 2, max = 30, message = "first name should be between 2 and 30 characters")
     @JsonProperty("firstName")
     private String firstName;
 
-    @NotNull(message = "last_name should not be empty")
+    @NotNull(message = "Last name should not be empty")
     @Size(min = 2, max = 30, message = "first name should be between 2 and 30 characters")
     @JsonProperty("lastName")
     private String lastName;
 
+    @NotNull(message = "Password should not be empty")
+    @Size(min = 8, message = "Password should be at least 8 characters")
+    @JsonProperty("password")
+    private String password;
+
     @JsonProperty
     EncodedImage image;
+
+
 
 
 
