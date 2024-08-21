@@ -1,13 +1,14 @@
 package com.example.sportnavigator.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -59,12 +60,11 @@ public class User {
     private Set<SportCourt> favoriteSportCourts;
 
     @Column(name = "creation_date", nullable = false, updatable = false)
-    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @LastModifiedDate
     private LocalDateTime lastUpdated;
+
 
 
 

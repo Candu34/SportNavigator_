@@ -42,24 +42,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid UserDTO userDTO,
                                            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
 
-            List<FieldError> errors = bindingResult.getFieldErrors();
-
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
-            }
-
-            throw new UserNotCreatedException(errorMsg.toString());
-
-        }
-
-        User user = userMapper.userDTOToUser(userDTO);
-        userService.saveUser(user);
+        userService.saveUser(userDTO, bindingResult);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -80,29 +64,7 @@ public class UserController {
                                              @RequestBody @Valid UserDTO userDTO,
                                              BindingResult bindingResult) {
 
-        User user = userService.getUserById(id);
-
-        if (user == null) {
-            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
-        }
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-
-            List<FieldError> errors = bindingResult.getFieldErrors();
-
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
-            }
-            throw new UserNotCreatedException(errorMsg.toString());
-        }
-        user = userMapper.userDTOToUser(userDTO);
-        System.out.println(user.getLastName() + ", " + user.getFirstName());
-        user.setId(id);
-        userService.saveUser(user);
-
+        userService.updateUser(userDTO, bindingResult);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
