@@ -8,8 +8,9 @@ import com.example.sportnavigator.Utils.Excetions.UserExistingEmailException;
 import com.example.sportnavigator.Utils.Excetions.UserNotCreatedException;
 import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -35,10 +36,7 @@ public class UserService {
             List<FieldError> errors = bindingResult.getFieldErrors();
 
             for (FieldError error : errors) {
-                errorMsg.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
+                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
             }
 
             throw new UserNotCreatedException(errorMsg.toString());
@@ -76,7 +74,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(userDTO.getId());
 
         if (userOptional.isEmpty()) {
-           //TODO exception throwing
+            //TODO exception throwing
         }
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -84,10 +82,7 @@ public class UserService {
             List<FieldError> errors = bindingResult.getFieldErrors();
 
             for (FieldError error : errors) {
-                errorMsg.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
+                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
             }
             throw new UserNotCreatedException(errorMsg.toString());
         }
@@ -98,6 +93,12 @@ public class UserService {
             user.setLastUpdated(LocalDateTime.now());
             userRepository.save(user);
         }
+    }
+
+    public User getAuthentificatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email);
     }
 
 

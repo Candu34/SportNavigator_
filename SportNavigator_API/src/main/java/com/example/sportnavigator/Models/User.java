@@ -1,17 +1,15 @@
 package com.example.sportnavigator.Models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +37,7 @@ public class User {
     private String lastName;
 
     @OneToOne(mappedBy = "user",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.REFRESH, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true, optional = true)
     private UserImage image;
 
@@ -68,6 +66,12 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime lastUpdated;
 
+
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles = new HashSet<>();
 
 
 
