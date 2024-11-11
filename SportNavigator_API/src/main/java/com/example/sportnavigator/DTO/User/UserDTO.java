@@ -1,5 +1,6 @@
-package com.example.sportnavigator.DTO;
+package com.example.sportnavigator.DTO.User;
 
+import com.example.sportnavigator.DTO.EncodedImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

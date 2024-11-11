@@ -29,7 +29,7 @@ public class SportNavigatorConfig {
     private final MyUserDetailsService userDetailsService;
     private final JwtAuthEntryPoint authEntryPoint;
 
-    private static final List<String> SECURED_URLS = List.of("");
+    private static final List<String> SECURED_URLS = List.of();
 
     @Bean
     public ModelMapper modelMapper() {

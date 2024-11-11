@@ -1,6 +1,6 @@
 package com.example.sportnavigator.Service;
 
-import com.example.sportnavigator.DTO.UserDTO;
+import com.example.sportnavigator.DTO.User.UserDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.UserRepository;
@@ -10,7 +10,6 @@ import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
