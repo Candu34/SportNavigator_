@@ -97,7 +97,12 @@ public class UserService {
     public User getAuthentificatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email);
+        Optional<User> user =  userRepository.findByEmail(email);
+        if(user.isEmpty()) {
+          throw new UserNotFoundException("User with this email wasn't found");
+        }
+
+        return user.get();
     }
 
 
