@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,15 +36,15 @@ public class UserController {
         return usersDTO;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<User> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    @ResponseBody
-    @PostMapping
-    public ResponseEntity<HttpStatus> save(@RequestBody @Valid UserDTO userDTO,
-                                           BindingResult bindingResult) {
+        User currentUser = (User) authentication.getPrincipal();
 
-        userService.saveUser(userDTO, bindingResult);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(currentUser);
     }
+
 
     @GetMapping("/{id}")
     @ResponseBody
