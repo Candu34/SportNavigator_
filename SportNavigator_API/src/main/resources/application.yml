@@ -12,7 +12,9 @@ auth:
   token:
     expirationInMils: 3600000
     jwtSecret: a91fa9864d6b594c1526c5eb334694650482032a07323f52b586a8d9ed698241ff4d60b2b8b1b49f248a180e2c108a160a3227f83580c8def7ba1646f835be9110c84e9afa8b4a3da3affbc2e2772d8b4725ede1ca9cbb81e054f09b7157162a5d55aee39deef771b0eb55a6db2cd66b239db895283b44653f06e
-
+  admin:
+    password: 'nimda123'
+    email: 'super.admin@email.com'
 
 
 

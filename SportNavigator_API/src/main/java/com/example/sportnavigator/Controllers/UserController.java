@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,7 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public List<UserDTO> findAll() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> usersDTO = new ArrayList<>();
@@ -36,6 +38,7 @@ public class UserController {
         return usersDTO;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,12 +48,14 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @GetMapping("/{id}")
     @ResponseBody
     public UserDTO getOne(@PathVariable("id") long id) {
         return userMapper.userToUserDTO(userService.getUserById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         userService.deleteUserByID(id);

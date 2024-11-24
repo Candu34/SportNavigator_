@@ -11,13 +11,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -50,6 +48,9 @@ public class User implements UserDetails {
 
     @Column(name = "password", length = 1000, nullable = false)
     private String password;
+
+    @Column(name = "email_verified")
+    private boolean emailVerified;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
                 orphanRemoval = false)
@@ -85,8 +86,20 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName()));
+        }
+
+        return authorities;
     }
+
+    @PrePersist
+    private void prePersist() {
+        this.emailVerified = false;
+    }
+
+
 
     @Override
     public String getUsername() {
