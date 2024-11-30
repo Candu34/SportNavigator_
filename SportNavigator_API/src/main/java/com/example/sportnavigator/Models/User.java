@@ -2,6 +2,8 @@ package com.example.sportnavigator.Models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +45,7 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE},
-            orphanRemoval = true, optional = true)
+            orphanRemoval = true, optional = true, fetch = FetchType.LAZY)
     private UserImage image;
 
     @Column(name = "password", length = 1000, nullable = false)
@@ -53,11 +55,11 @@ public class User implements UserDetails {
     private boolean emailVerified;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
-                orphanRemoval = false)
+                orphanRemoval = false, fetch = FetchType.LAZY)
     private List<SportCourt> sportCourts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
-                orphanRemoval = true, fetch = FetchType.EAGER)
+                orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Event> events;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
@@ -66,6 +68,7 @@ public class User implements UserDetails {
 
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<SportCourt> favoriteSportCourts;
 
     @CreationTimestamp
@@ -81,6 +84,7 @@ public class User implements UserDetails {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JsonBackReference
     private Collection<Role> roles = new HashSet<>();
 
 

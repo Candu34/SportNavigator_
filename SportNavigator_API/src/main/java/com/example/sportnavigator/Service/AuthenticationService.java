@@ -9,9 +9,12 @@ import com.example.sportnavigator.Models.Role;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.RoleRepository;
 import com.example.sportnavigator.Repository.UserRepository;
+import com.example.sportnavigator.Utils.Excetions.UserNotVerifiedException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final UserRepository userRepository;
@@ -33,6 +37,11 @@ public class AuthenticationService {
         if (optionalRole.isEmpty()) {
             return null;
         }
+
+        if (userRepository.existsByEmail(input.getEmail())) {
+            throw new UsernameNotFoundException("User with this email already exists");
+        }
+
         User user = new User();
         user.setFirstName(input.getFirstName());
         user.setLastName(input.getLastName());
@@ -40,16 +49,26 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(input.getPassword()));
         user.getRoles().add(optionalRole.get());
 
+        log.info("User with mail: {} created", user.getEmail());
         return userRepository.save(user);
     }
 
     public User authenticate(LoginUserDTO input) {
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
                         input.getPassword()
                 )
         );
+
+       Optional<User> user = userRepository.findByEmail(input.getEmail());
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User with this email not found");
+        } else if (!user.get().isEmailVerified()) {
+            throw new UserNotVerifiedException("You're email is not verified!");
+        }
+
         return userRepository.findByEmail(input.getEmail())
                 .orElseThrow();
     }

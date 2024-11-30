@@ -4,6 +4,12 @@ spring:
   servlet:
     multipart:
       max-file-size: 50MB
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
 
 server:
   port: 8080

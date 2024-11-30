@@ -8,18 +8,22 @@ services:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: sport_navigator
     volumes:
-      - postgres:/data/postgres
+      - postgres:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
       - sport-navigator
     restart: unless-stopped
-  mail-dev:
-    container_name: mail-dev
-    image: maildev/maildev
+  redis:
+    image: redis:latest
     ports:
-      - 1080:1080
-      - 1025:1025
+      - '6379:6379'
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
 
 networks:
   sport-navigator:

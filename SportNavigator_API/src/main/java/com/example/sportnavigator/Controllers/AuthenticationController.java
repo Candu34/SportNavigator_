@@ -4,32 +4,38 @@ package com.example.sportnavigator.Controllers;
 import com.example.sportnavigator.DTO.ResponeInfo.LoginResponse;
 import com.example.sportnavigator.DTO.User.LoginUserDTO;
 import com.example.sportnavigator.DTO.User.RegisterUserDTO;
+import com.example.sportnavigator.DTO.User.UserDTO;
+import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Security.jwt.JwtService;
 import com.example.sportnavigator.Service.AuthenticationService;
+import com.example.sportnavigator.Service.EmailVerificationService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("api/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-    }
+    private final EmailVerificationService emailVerificationService;
+    private final UserMapper userMapper;
+
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDTO registerUserDto) {
+    public ResponseEntity<User> register(@RequestBody @Valid RegisterUserDTO registerUserDto) {
         User registeredUser = authenticationService.signup(registerUserDto);
+
+        if (!registeredUser.isEmailVerified()) {
+            emailVerificationService.sendVerificationToken(registeredUser.getId(), registeredUser.getEmail());
+        }
 
         return ResponseEntity.ok(registeredUser);
     }
@@ -45,5 +51,24 @@ public class AuthenticationController {
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/email/resend-verification")
+    public ResponseEntity<Void> resendVerificationLink(@RequestBody String email) {
+
+        System.out.println("Email to recent verification: "+email);
+
+        emailVerificationService.resendVerificationToken(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/email/verify")
+    public ResponseEntity<UserDTO> verifyEmail(
+            @RequestParam("uid") Long userId, @RequestParam("t") String token) {
+
+        final User verifiedUser =
+                emailVerificationService.verifyEmail(userId, token);
+
+        return ResponseEntity.ok(userMapper.userToUserDTO(verifiedUser));
     }
 }

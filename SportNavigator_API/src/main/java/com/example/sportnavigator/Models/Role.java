@@ -2,6 +2,7 @@ package com.example.sportnavigator.Models;
 
 
 import com.example.sportnavigator.Models.Enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +30,7 @@ public class Role implements GrantedAuthority {
     private String description;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     private Collection<User> users = new HashSet<>();
 
     @Override
