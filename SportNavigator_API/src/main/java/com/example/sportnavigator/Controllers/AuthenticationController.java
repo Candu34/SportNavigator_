@@ -16,17 +16,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
+
     private final JwtService jwtService;
-
     private final AuthenticationService authenticationService;
-
     private final EmailVerificationService emailVerificationService;
     private final UserMapper userMapper;
+
 
 
     @PostMapping("/signup")
@@ -70,5 +71,17 @@ public class AuthenticationController {
                 emailVerificationService.verifyEmail(userId, token);
 
         return ResponseEntity.ok(userMapper.userToUserDTO(verifiedUser));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String token = authHeader.substring(7);
+        authenticationService.logout(token);
+
+        return ResponseEntity.noContent().build();
     }
 }

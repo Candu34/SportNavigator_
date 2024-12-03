@@ -1,6 +1,7 @@
 package com.example.sportnavigator.Utils.ExceptionHandler;
 
 
+import com.example.sportnavigator.Utils.Excetions.AuthenticationException;
 import com.example.sportnavigator.Utils.Excetions.UserNotVerifiedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -53,6 +54,11 @@ public class AuthExceptionHandler {
         if (exception instanceof UserNotVerifiedException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
             errorDetail.setProperty("description", "Email not verified");
+        }
+
+        if (exception instanceof AuthenticationException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Authentication failed");
         }
 
         if (errorDetail == null) {

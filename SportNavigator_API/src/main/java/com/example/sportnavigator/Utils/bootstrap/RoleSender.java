@@ -1,7 +1,7 @@
 package com.example.sportnavigator.Utils.bootstrap;
 
 import com.example.sportnavigator.Models.Enums.RoleEnum;
-import com.example.sportnavigator.Models.Role;
+import com.example.sportnavigator.Models.Authentification.Role;
 import com.example.sportnavigator.Repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;

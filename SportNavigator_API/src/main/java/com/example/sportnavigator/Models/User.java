@@ -2,6 +2,7 @@ package com.example.sportnavigator.Models;
 
 
 
+import com.example.sportnavigator.Models.Authentification.Role;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

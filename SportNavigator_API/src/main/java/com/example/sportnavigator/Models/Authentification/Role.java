@@ -1,16 +1,14 @@
-package com.example.sportnavigator.Models;
+package com.example.sportnavigator.Models.Authentification;
 
 
-import com.example.sportnavigator.Models.Enums.RoleEnum;
+import com.example.sportnavigator.Models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

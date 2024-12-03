@@ -2,7 +2,7 @@ package com.example.sportnavigator.Utils.bootstrap;
 
 import com.example.sportnavigator.DTO.User.RegisterUserDTO;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
-import com.example.sportnavigator.Models.Role;
+import com.example.sportnavigator.Models.Authentification.Role;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.RoleRepository;
 import com.example.sportnavigator.Repository.UserRepository;

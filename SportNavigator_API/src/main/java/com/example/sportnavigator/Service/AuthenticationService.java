@@ -1,14 +1,14 @@
 package com.example.sportnavigator.Service;
 
 
-
 import com.example.sportnavigator.DTO.User.LoginUserDTO;
 import com.example.sportnavigator.DTO.User.RegisterUserDTO;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
-import com.example.sportnavigator.Models.Role;
+import com.example.sportnavigator.Models.Authentification.Role;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.RoleRepository;
 import com.example.sportnavigator.Repository.UserRepository;
+import com.example.sportnavigator.Security.jwt.JwtService;
 import com.example.sportnavigator.Utils.Excetions.UserNotVerifiedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 
 
 @Service
@@ -62,14 +63,16 @@ public class AuthenticationService {
                 )
         );
 
-       Optional<User> user = userRepository.findByEmail(input.getEmail());
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User with this email not found");
-        } else if (!user.get().isEmailVerified()) {
+        User user = userRepository.findByEmail(input.getEmail()).orElseThrow();
+        if (!user.isEmailVerified()) {
             throw new UserNotVerifiedException("You're email is not verified!");
         }
 
-        return userRepository.findByEmail(input.getEmail())
-                .orElseThrow();
+        return user;
     }
+
+    public void logout (String token) {
+
+    }
+
 }
