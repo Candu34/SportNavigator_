@@ -1,4 +1,4 @@
-package com.example.sportnavigator.DTO.User;
+package com.example.sportnavigator.DTO.Auth;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

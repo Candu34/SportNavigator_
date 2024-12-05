@@ -1,7 +1,7 @@
 package com.example.sportnavigator.Controllers;
 
 
-import com.example.sportnavigator.DTO.User.UserDTO;
+import com.example.sportnavigator.DTO.Auth.UserDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;

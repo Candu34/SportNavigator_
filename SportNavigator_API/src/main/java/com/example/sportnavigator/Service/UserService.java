@@ -1,7 +1,7 @@
 package com.example.sportnavigator.Service;
 
-import com.example.sportnavigator.DTO.User.RegisterUserDTO;
-import com.example.sportnavigator.DTO.User.UserDTO;
+import com.example.sportnavigator.DTO.Auth.RegisterUserDTO;
+import com.example.sportnavigator.DTO.Auth.UserDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
 import com.example.sportnavigator.Models.Authentification.Role;

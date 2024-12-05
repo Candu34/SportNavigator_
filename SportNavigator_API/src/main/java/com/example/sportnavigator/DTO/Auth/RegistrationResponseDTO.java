@@ -1,4 +1,4 @@
-package com.example.sportnavigator.DTO.User;
+package com.example.sportnavigator.DTO.Auth;
 
 public record RegistrationResponseDTO(
         String email,

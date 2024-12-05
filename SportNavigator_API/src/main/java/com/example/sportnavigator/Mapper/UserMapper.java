@@ -1,7 +1,7 @@
 package com.example.sportnavigator.Mapper;
 
 import com.example.sportnavigator.DTO.EncodedImage;
-import com.example.sportnavigator.DTO.User.UserDTO;
+import com.example.sportnavigator.DTO.Auth.UserDTO;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Models.UserImage;
 import lombok.AllArgsConstructor;

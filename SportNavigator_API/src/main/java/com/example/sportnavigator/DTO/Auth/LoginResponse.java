@@ -1,4 +1,4 @@
-package com.example.sportnavigator.DTO.ResponeInfo;
+package com.example.sportnavigator.DTO.Auth;
 
 
 import lombok.AllArgsConstructor;
@@ -13,5 +13,5 @@ public class LoginResponse {
     private String token;
 
     private long expiresIn;
-    
+
 }

@@ -1,14 +1,13 @@
 package com.example.sportnavigator.Service;
 
 
-import com.example.sportnavigator.DTO.User.LoginUserDTO;
-import com.example.sportnavigator.DTO.User.RegisterUserDTO;
+import com.example.sportnavigator.DTO.Auth.LoginUserDTO;
+import com.example.sportnavigator.DTO.Auth.RegisterUserDTO;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
 import com.example.sportnavigator.Models.Authentification.Role;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.RoleRepository;
 import com.example.sportnavigator.Repository.UserRepository;
-import com.example.sportnavigator.Security.jwt.JwtService;
 import com.example.sportnavigator.Utils.Excetions.UserNotVerifiedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

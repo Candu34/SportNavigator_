@@ -1,6 +1,6 @@
 package com.example.sportnavigator.Controllers;
 
-import com.example.sportnavigator.DTO.User.RegisterUserDTO;
+import com.example.sportnavigator.DTO.Auth.RegisterUserDTO;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;
 import org.springframework.http.ResponseEntity;
