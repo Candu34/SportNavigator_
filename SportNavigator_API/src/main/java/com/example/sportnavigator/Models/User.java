@@ -2,6 +2,7 @@ package com.example.sportnavigator.Models;
 
 
 
+import com.example.sportnavigator.Models.Authentification.RefreshToken;
 import com.example.sportnavigator.Models.Authentification.Role;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -87,6 +88,9 @@ public class User implements UserDetails {
                 inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @JsonBackReference
     private Collection<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens;
 
 
     @Override

@@ -10,12 +10,10 @@ import com.example.sportnavigator.Service.AuthenticationService;
 import com.example.sportnavigator.Service.EmailVerificationService;
 import com.example.sportnavigator.Service.RefreshTokenService;
 import com.example.sportnavigator.Utils.Excetions.AuthenticationException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -50,11 +48,11 @@ public class AuthenticationController {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginUserDto.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticatedUser.getEmail());
 
-        JwtResponseDTO jwtResponseDTO =   JwtResponseDTO.builder()
+        JwtResponseDTO jwtResponseDTO = JwtResponseDTO.builder()
                 .accessToken(jwtToken)
-                .token(refreshToken.getToken())
+                .refreshToken(refreshToken.getToken())
                 .build();
 
         return ResponseEntity.ok(jwtResponseDTO);
@@ -80,14 +78,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String token = authHeader.substring(7);
-        authenticationService.logout(token);
-
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        authenticationService.logout(request);
         return ResponseEntity.noContent().build();
     }
 
@@ -100,9 +92,11 @@ public class AuthenticationController {
                     String accessToken = jwtService.generateToken(user);
                     return JwtResponseDTO.builder()
                             .accessToken(accessToken)
-                            .token(refreshTokenRequestDTO.getToken()).build();
+                            .refreshToken(refreshTokenRequestDTO.getToken()).build();
                 }).orElseThrow(() ->new AuthenticationException("Refresh Token is not in DB..!!"));
 
         return ResponseEntity.ok(responseDTO);
     }
+
+
 }

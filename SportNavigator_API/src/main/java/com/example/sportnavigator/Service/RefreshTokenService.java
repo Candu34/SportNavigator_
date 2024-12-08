@@ -6,6 +6,7 @@ import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.RefreshTokenRepository;
 import com.example.sportnavigator.Repository.UserRepository;
 import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,19 +26,23 @@ public class RefreshTokenService {
     @Value("${auth.refresh-token.expirationInMils}")
     private long EXPIRATION_TIME;
 
+    @Transactional()
     public RefreshToken createRefreshToken(String email){
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("User with email: " + email + " not found!");
         }
+        User user = optionalUser.get();
+
+        refreshTokenRepository.deleteByUserEmail(user.getEmail());
+
         RefreshToken refreshToken = RefreshToken.builder()
-                .user(user.get())
+                .user(user)
                 .token(UUID.randomUUID().toString())
                 .expiryDate(Instant.now().plusMillis(EXPIRATION_TIME))
                 .build();
         return refreshTokenRepository.save(refreshToken);
     }
-
 
 
     public Optional<RefreshToken> findByToken(String token){
@@ -55,5 +60,15 @@ public class RefreshTokenService {
     public RefreshToken save(RefreshToken refreshToken){
         return refreshTokenRepository.save(refreshToken);
     }
+
+    public void deleteById(Long id){
+        refreshTokenRepository.deleteById(id);
+    }
+
+    @Transactional()
+    public void deleteByUserEmail(String userEmail){
+        refreshTokenRepository.deleteByUserEmail(userEmail);
+    }
+
 
 }
