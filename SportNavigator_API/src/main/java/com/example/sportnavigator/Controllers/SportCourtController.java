@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/courts")
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class SportCourtController {
     private final SportCourtService sportCourtService;

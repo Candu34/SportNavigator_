@@ -63,6 +63,7 @@ public class UserController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(@PathVariable Long id,
                                              @RequestBody @Valid UserDTO userDTO,

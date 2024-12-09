@@ -31,7 +31,6 @@ public class AuthenticationController {
     private final RefreshTokenService refreshTokenService;
 
 
-
     @PostMapping("/signup")
     public ResponseEntity<User> register(@RequestBody @Valid RegisterUserDTO registerUserDto) {
         User registeredUser = authenticationService.signup(registerUserDto);
