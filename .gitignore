@@ -35,3 +35,5 @@ build/
 
 
 /data
+
+SportNavigator_API/src/main/resources/jwt
