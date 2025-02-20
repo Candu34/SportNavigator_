@@ -3,10 +3,10 @@ import React, {useState} from "react";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import validate from 'react-native-email-validator';
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "expo-router";
 
 
 
@@ -14,8 +14,10 @@ import validate from 'react-native-email-validator';
 
 const Page = () => {
     useWarmUpBrowser();
-    const [mail, setMail] = useState('');
+    const [email, setMail] = useState('');
     const [password, setPassword] = useState('');
+    const {onLogin, onRegister} = useAuth();
+    const router = useRouter();
 
     const handleMailChange = (text:string) => {
         setMail(text);
@@ -25,20 +27,35 @@ const Page = () => {
         setPassword(text);
     };
     
-    const handleSubmit = () => {
-            validate(mail)
-              ? console.log('Email is valid')
-              : Alert.alert('Invalid mail');
-
-              password.length < 8 ? Alert.alert("Invalid password"): console.log("valid password");
-       }
+    const handleSubmit = async () => {
+        if (!validate(email)) {
+          return Alert.alert('Invalid email');
+        }
+    
+        if (password.length < 8) {
+          return Alert.alert('Password should be at least 8 characters');
+        }
+    
+        try {
+          const result = await onLogin(email, password);
+          if (result.error) {
+            Alert.alert('Login failed', result.msg);
+          } else {
+            console.log('Login successful');
+            router.replace('/(tabs)'); 
+          }
+        } catch (error) {
+          console.error('Login failed:', error);
+          Alert.alert('Login failed', error.message);
+        }
+      };
 
 
     return (
         <View style={[styles.container, {marginBottom: 30}]}>
             <TextInput autoCapitalize='none' 
             placeholder='Email'
-            value={mail}
+            value={email}
             style={[defaultStyles.inputField, {marginBottom: 15, fontFamily: 'pop'}]}
             onChangeText={handleMailChange}/>
             <TextInput autoCapitalize='none' secureTextEntry={true} 
@@ -64,21 +81,9 @@ const Page = () => {
             </View>
 
             <View style={{gap: 20}}>
-                <TouchableOpacity style={styles.btnOutline}>
-                    <Ionicons name='call-outline' size={24} style={defaultStyles.btnIcon}/>
-                    <Text style={styles.btnOutlineText}>Continue with Phone</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
-                    <SimpleLineIcons name="social-google" size={24} style={defaultStyles.btnIcon}/>
-                    <Text style={styles.btnOutlineText}>Continue with Google</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
-                    <SimpleLineIcons name='social-facebook' size={24} style={defaultStyles.btnIcon}/>
-                    <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
-                    <AntDesign name='apple-o' size={24} style={defaultStyles.btnIcon}/>
-                    <Text style={styles.btnOutlineText}>Continue with Apple</Text>
+                <TouchableOpacity style={styles.btnOutline} onPress={() => router.navigate('/(modals)/register')}>
+                <FontAwesome name="sign-in" size={24} color="black" style={defaultStyles.btnIcon}/>
+                    <Text style={styles.btnOutlineText}>Create Account</Text>
                 </TouchableOpacity>
 
             </View>

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthProvider } from './context/AuthContext';
 
 export {
   ErrorBoundary,
@@ -51,6 +52,7 @@ const isSignedIn = false;
   const router = useRouter();
 
   return (
+    <AuthProvider>
       <Stack>
         <Stack.Screen name="screens/start_page" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -59,7 +61,20 @@ const isSignedIn = false;
             fontFamily: 'pop-sb',
           },
           headerTitleAlign: 'center',
-          headerTitle: 'Log in or sign up',
+          headerTitle: 'Log in',
+          presentation: 'fullScreenModal',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28}/>
+            </TouchableOpacity> 
+          )
+        }}/>
+        <Stack.Screen name="(modals)/register" options={{
+          headerTitleStyle: {
+            fontFamily: 'pop-sb',
+          },
+          headerTitleAlign: 'center',
+          headerTitle: 'Sign up',
           presentation: 'fullScreenModal',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
@@ -117,5 +132,6 @@ const isSignedIn = false;
           )
         }}/>
       </Stack>
+      </AuthProvider>
   );
 }

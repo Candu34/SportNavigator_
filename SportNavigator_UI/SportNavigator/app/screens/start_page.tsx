@@ -38,7 +38,7 @@ const Page = () => {
                             <TouchableOpacity  style={styles.loginButton} onPress={() => {router.navigate("/(modals)/login")}}>
                                 <Text  style={{fontSize: 20, fontFamily: 'pop-sb'}}>Login</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.joinButton} onPress={() => {router.navigate("/(tabs)")}}>
+                            <TouchableOpacity style={styles.joinButton} onPress={() => {router.navigate("/(modals)/register")}}>
                                 <Text style={{fontSize: 20, fontFamily: 'pop-sb', color: '#fff'}}>Join now</Text>
                             </TouchableOpacity>
                         </View>
