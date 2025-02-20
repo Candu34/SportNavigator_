@@ -13,6 +13,8 @@ import com.example.sportnavigator.Utils.Excetions.AuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationController {
 
 
@@ -39,6 +42,7 @@ public class AuthenticationController {
             emailVerificationService.sendVerificationToken(registeredUser.getId(), registeredUser.getEmail());
         }
 
+        log.info("Registered user: {}", registeredUser.getEmail());
         return ResponseEntity.ok(registeredUser);
     }
 
@@ -52,15 +56,15 @@ public class AuthenticationController {
         JwtResponseDTO jwtResponseDTO = JwtResponseDTO.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken.getToken())
+                .user(userMapper.userToUserDTO(authenticatedUser))
                 .build();
 
+        log.info("Logged user: {}", authenticatedUser.getEmail());
         return ResponseEntity.ok(jwtResponseDTO);
     }
 
     @PostMapping("/email/resend-verification")
     public ResponseEntity<Void> resendVerificationLink(@RequestBody String email) {
-
-        System.out.println("Email to recent verification: "+email);
 
         emailVerificationService.resendVerificationToken(email);
         return ResponseEntity.noContent().build();
@@ -79,6 +83,7 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         authenticationService.logout(request);
+        log.info("Logged out user: {}", request.getUserPrincipal().getName());
         return ResponseEntity.noContent().build();
     }
 
