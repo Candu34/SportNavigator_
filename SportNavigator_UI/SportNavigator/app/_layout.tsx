@@ -1,11 +1,10 @@
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, Navigator } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 export {
   ErrorBoundary,
@@ -38,100 +37,110 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
+  );
 }
 
 function RootLayoutNav() {
-const isSignedIn = false;
-  useEffect(() => {
-    if(!isSignedIn){
-      router.push('../screens/start_page')
-    }
-  })
-
+  const { user, loading } = useAuth();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.replace('/screens/start_page');
+      } else {
+        router.replace('/(tabs)');
+      }
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return null; 
+  }
+
   return (
-    <AuthProvider>
-      <Stack>
-        <Stack.Screen name="screens/start_page" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(modals)/login" options={{
-          headerTitleStyle: {
-            fontFamily: 'pop-sb',
-          },
-          headerTitleAlign: 'center',
-          headerTitle: 'Log in',
-          presentation: 'fullScreenModal',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-        <Stack.Screen name="(modals)/register" options={{
-          headerTitleStyle: {
-            fontFamily: 'pop-sb',
-          },
-          headerTitleAlign: 'center',
-          headerTitle: 'Sign up',
-          presentation: 'fullScreenModal',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-        <Stack.Screen name="listing/[id]" options={{headerTitle: '', headerTransparent: true}} />
-        <Stack.Screen name="(modals)/court" options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-        <Stack.Screen name = "(modals)/mapInput" options={{
-          headerTitleStyle: {
-            fontFamily: 'pop-sb'
-          },
-          headerTitle: "Select location on map",
-          headerTitleAlign: 'center',
-          presentation: 'fullScreenModal',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-        <Stack.Screen name="(modals)/addEvent" options={{
-          headerTitleStyle: {
-            fontFamily: 'pop-sb'
-          },
-          headerTitle: "Create event",
-          headerTitleAlign: 'center',
-          presentation: 'fullScreenModal',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-         <Stack.Screen name="(modals)/events" options={{
-          headerTitleStyle: {
-            fontFamily: 'pop-sb'
-          },
-          headerTitle: "Upcoming events",
-          headerTitleAlign: 'center',
-          presentation: 'fullScreenModal',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28}/>
-            </TouchableOpacity> 
-          )
-        }}/>
-      </Stack>
-      </AuthProvider>
+    <Stack>
+      <Stack.Screen name="screens/start_page" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(modals)/login" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb',
+        },
+        headerTitleAlign: 'center',
+        headerTitle: 'Log in',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="(modals)/register" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb',
+        },
+        headerTitleAlign: 'center',
+        headerTitle: 'Sign up',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="listing/[id]" options={{ headerTitle: '', headerTransparent: true }} />
+      <Stack.Screen name="(modals)/court" options={{
+        presentation: 'transparentModal',
+        animation: 'fade',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="(modals)/mapInput" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb'
+        },
+        headerTitle: "Select location on map",
+        headerTitleAlign: 'center',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="(modals)/addEvent" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb'
+        },
+        headerTitle: "Create event",
+        headerTitleAlign: 'center',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="(modals)/events" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb'
+        },
+        headerTitle: "Upcoming events",
+        headerTitleAlign: 'center',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+    </Stack>
   );
 }

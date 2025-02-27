@@ -1,86 +1,98 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Modal} from "react-native";
-import React, {useState} from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Modal } from "react-native";
+import React, { useState, useEffect } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { defaultStyles } from "@/constants/Styles";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from "@/constants/Colors";
 import DatePicker from 'react-native-modern-datepicker';
 import AppLoader from "@/components/AppLoader";
-
-const USER_ID = 1;
-
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import { API_URL } from "@/constants/api_url";
 
 const Page = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState("");
     const [showDateTimePicker, setShowDateTimePicker] = useState(false);
-    const [startDate, setStartDate] = useState("");
     const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     const router = useRouter();
     const params = useLocalSearchParams();
     const courtId = params.id;
-    console.log(courtId);
 
-    const handleSubmit = () => {
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const userData = await SecureStore.getItemAsync('user');
+                if (!userData) {
+                    throw new Error("User not found in storage");
+                }
+
+                const user = JSON.parse(userData);
+                if (!user.id) {
+                    throw new Error("Invalid user data");
+                }
+
+                setUserId(user.id);
+            } catch (error) {
+                console.error("Error fetching user ID:", error);
+            }
+        };
+
+        fetchUserId();
+    }, []);
+
+    const handleSubmit = async () => {
         if (!name || !description || !date) {
             Alert.alert('Error', 'Please fill in all fields and select a date');
             return;
         }
         setLoading(true);
-    
+
         const eventDTO = {
             name: name,
             description: description,
-            sportCourtID: courtId, 
-            userId: USER_ID,
+            sportCourtID: courtId,
+            userId: userId,
             event_time: date,
         };
-    
-        fetch('https://3q55nqgg-8080.euw.devtunnels.ms/api/events', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(eventDTO)
-        })
-        .then(response => {
+
+        try {
+            const response = await axios.post(`${API_URL}/events`, eventDTO, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             setLoading(false);
-            if (response.ok) {
-                return response.json();
+            if (response.status === 200) {
+                setName('');
+                setDescription('');
+                setDate("");
+                Alert.alert('Success');
+                router.navigate("/listing/" + courtId);
             } else {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message);
-                });
+                Alert.alert('Error', response.data.message);
             }
-        })
-        .then(data => {
-            setName('');
-            setDescription('');
-            setDate("");
-            Alert.alert('Success');
-            router.navigate("/listing/" + courtId);
-        })
-        .catch(error => {
+        } catch (error) {
             setLoading(false);
             console.error('Error:', error);
-            Alert.alert('Error', error.message); 
-        });
+            Alert.alert('Error', error.message);
+        }
     };
-    
 
-    const handleNameChange = (text:string) => {
+    const handleNameChange = (text: string) => {
         setName(text);
     };
-    
-    const handleDescriptionChange = (text:string) => {
+
+    const handleDescriptionChange = (text: string) => {
         setDescription(text);
     };
 
-    const handleOnSelectedChange = (slectedDate:any) => {
-        setDate(getFormattedDateTime(slectedDate));
-        console.log(getFormattedDateTime(slectedDate));
+    const handleOnSelectedChange = (selectedDate: any) => {
+        setDate(getFormattedDateTime(selectedDate));
+        console.log(getFormattedDateTime(selectedDate));
     }
 
     const handleOnPressDateTime = () => {
@@ -91,78 +103,78 @@ const Page = () => {
         const [datePart, timePart] = dateString.split(' ');
         const [year, month, day] = datePart.split('/');
         const [hours, minutes] = timePart.split(':');
-      
+
         return `${year}-${month}-${day}T${hours}:${minutes}`;
-      }
-    
+    }
+
     return (
         <>
-    <View style={styles.container}>
-        <View style={styles.container}>
-            <TextInput autoCapitalize='none' placeholder='Name'
-                            style={[defaultStyles.inputField, {marginBottom: 15, fontFamily: 'pop'}]}
-                            value={name}
-                            onChangeText={handleNameChange}/>
-            <TextInput autoCapitalize='none' multiline={true}
-                            numberOfLines={4}
-                            placeholder='Description' 
-                            value={description}
-                            style={[defaultStyles.inputField, {marginBottom: 20, fontFamily: 'pop', height: 80}]}
-                            onChangeText={handleDescriptionChange}/>
-            <TouchableOpacity onPress={handleOnPressDateTime}  style={[defaultStyles.btn, {flexDirection: 'row', gap: 20 }]}>
-                <MaterialCommunityIcons name="timetable" size={24} color="white" />
-                <Text style={defaultStyles.btnText}>Select date and time</Text>
-            </TouchableOpacity>
-            <View style={styles.seperatorView}>
-                <View style={{borderBottomColor: '#000',
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        flex: 1,
-                }}/>
-            </View>
-                <TouchableOpacity  
-                    onPress={handleSubmit}
-                    style={defaultStyles.btn}>
-                    <Text style={defaultStyles.btnText}>Add Event</Text>
-                </TouchableOpacity>
-        </View>
-        <View>
-            <Modal 
-            animationType="slide"
-            transparent={true}
-            visible={showDateTimePicker}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-
-                        <DatePicker
-                             onSelectedChange={date => handleOnSelectedChange(date as any)}
-                             minuteInterval={5}
-                             options={{
-                                defaultFont: 'pop-sb',
-                                headerFont: 'pop-b',
-                                backgroundColor: '#080516',
-                                textHeaderColor: '#469ab6',
-                                textDefaultColor: '#fff',
-                                selectedTextColor: '#fff',
-                                mainColor: Colors.primary,
-                                textSecondaryColor: '#469ab6',
-                                borderColor: 'rgba(122,146, 165, 0.1)',
-                             }}
-                        />
-
-
-                        <TouchableOpacity  onPress={handleOnPressDateTime}>
-                            <Text style={defaultStyles.btnText}>
-                                Close
-                            </Text>
-                        </TouchableOpacity>
+            <View style={styles.container}>
+                <View style={styles.container}>
+                    <TextInput autoCapitalize='none' placeholder='Name'
+                        style={[defaultStyles.inputField, { marginBottom: 15, fontFamily: 'pop' }]}
+                        value={name}
+                        onChangeText={handleNameChange} />
+                    <TextInput autoCapitalize='none' multiline={true}
+                        numberOfLines={4}
+                        placeholder='Description'
+                        value={description}
+                        style={[defaultStyles.inputField, { marginBottom: 20, fontFamily: 'pop', height: 80 }]}
+                        onChangeText={handleDescriptionChange} />
+                    <TouchableOpacity onPress={handleOnPressDateTime} style={[defaultStyles.btn, { flexDirection: 'row', gap: 20 }]}>
+                        <MaterialCommunityIcons name="timetable" size={24} color="white" />
+                        <Text style={defaultStyles.btnText}>Select date and time</Text>
+                    </TouchableOpacity>
+                    <View style={styles.seperatorView}>
+                        <View style={{
+                            borderBottomColor: '#000',
+                            borderBottomWidth: StyleSheet.hairlineWidth,
+                            flex: 1,
+                        }} />
                     </View>
+                    <TouchableOpacity
+                        onPress={handleSubmit}
+                        style={defaultStyles.btn}>
+                        <Text style={defaultStyles.btnText}>Add Event</Text>
+                    </TouchableOpacity>
                 </View>
-            </Modal>
-        </View>
-    </View>
-         {loading && <AppLoader/>}
-    </>
+                <View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={showDateTimePicker}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+
+                                <DatePicker
+                                    onSelectedChange={date => handleOnSelectedChange(date as any)}
+                                    minuteInterval={5}
+                                    options={{
+                                        defaultFont: 'pop-sb',
+                                        headerFont: 'pop-b',
+                                        backgroundColor: '#080516',
+                                        textHeaderColor: '#469ab6',
+                                        textDefaultColor: '#fff',
+                                        selectedTextColor: '#fff',
+                                        mainColor: Colors.primary,
+                                        textSecondaryColor: '#469ab6',
+                                        borderColor: 'rgba(122,146, 165, 0.1)',
+                                    }}
+                                />
+
+                                <TouchableOpacity onPress={handleOnPressDateTime}>
+                                    <Text style={defaultStyles.btnText}>
+                                        Close
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+                </View>
+            </View>
+            {loading && <AppLoader />}
+        </>
     )
 }
 
@@ -170,15 +182,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 26, 
+        padding: 26,
         paddingTop: 70,
     },
-      btnOutlineText: {
+    btnOutlineText: {
         color: '#000',
         fontSize: 16,
         fontFamily: 'pop-sb',
-      },
-      seperatorView:{
+    },
+    seperatorView: {
         flexDirection: 'row',
         gap: 10,
         alignItems: 'center',
@@ -191,7 +203,7 @@ const styles = StyleSheet.create({
         marginRight: 5,
     },
     centeredView: {
-        flex: 1, 
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fff',

@@ -11,6 +11,8 @@ import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import AppLoader from "@/components/AppLoader";
 import { API_URL } from "@/constants/api_url";
+import axios from "axios";
+import * as SecureStore from 'expo-secure-store';
 
 
 const Page = () => {
@@ -67,56 +69,58 @@ React.useLayoutEffect(() => {
     });
 }, [navigation]);
 
-const handleSubmit = () => {
-    if (!name || !description || !sport || !courtType || !markerPosition.latitude || !markerPosition.longitude || !images || !images.length) {
+const handleSubmit = async () => {
+    if (!name || !description || !sport || !courtType || !markerPosition?.latitude || !markerPosition?.longitude || !images || !images.length) {
         Alert.alert('Error', 'Please fill in all fields and select images');
         return;
     }
     setLoading(true);
-    
-    const sportCourtDTO = {
-        name: name,
-        description: description,
-        sport: sport,
-        courtType: courtType,
-        images: images,
-        userID: 1, 
-        latitude: markerPosition.latitude,
-        longitude: markerPosition.longitude
-    };
 
-    fetch(`${API_URL}/courts`, {  
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sportCourtDTO)
-    })
-    .then(response => {
-        setLoading(false);
-        if (response.ok) {
-            return response.json(); 
-        } else {
-            return response.json().then(errorData => {
-                Alert.alert(errorData.message); 
-            });
+    try {
+        const userData = await SecureStore.getItemAsync('user');
+        if (!userData) {
+            throw new Error("User not found in storage");
         }
-    })
-    .then(data => {
-        setName('');
-        setDescription('');
-        setImages(null);
-        setSport(null);
-        setCourtType(null);
-        Alert.alert('Success');
-        router.navigate("/listing/" + data);
-    })
-    .catch(error => {
+        
+        const user = JSON.parse(userData); 
+        if (!user.id) {
+            throw new Error("Invalid user data");
+        }
+
+        const sportCourtDTO = {
+            name,
+            description,
+            sport,
+            courtType,
+            images,
+            userID: user.id, 
+            latitude: markerPosition.latitude,
+            longitude: markerPosition.longitude
+        };
+
+        // Send API request
+        const response = await axios.post(`${API_URL}/courts`, sportCourtDTO);
+        setLoading(false);
+
+        if (response.status === 200) {
+            const data = response.data;
+            setName('');
+            setDescription('');
+            setImages(null);
+            setSport(null);
+            setCourtType(null);
+            Alert.alert('Success');
+            router.navigate(`/listing/${data}`);
+        } else {
+            Alert.alert('Error', response.data.message);
+        }
+    } catch (error) {
         setLoading(false);
         console.error('Error:', error);
-        Alert.alert('error', error); 
-    });
+        Alert.alert('Error', error.message || "Something went wrong");
+    }
 };
+
 
 
 
