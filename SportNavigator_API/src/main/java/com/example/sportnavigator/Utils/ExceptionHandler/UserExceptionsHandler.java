@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class UserExceptionsHandler {
@@ -30,5 +31,11 @@ protected ResponseEntity<ErrorMessage> handleUserNotUpdatedException(UserNotUpda
     ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
     return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 }
+
+    @ExceptionHandler(value = ResponseStatusException.class)
+    protected ResponseEntity<ErrorMessage> handleResponseStatusException(ResponseStatusException e){
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage(), System.currentTimeMillis());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
 
 }

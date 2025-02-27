@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/courts")
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class SportCourtController {
     private final SportCourtService sportCourtService;
@@ -69,6 +71,7 @@ public class SportCourtController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<HttpStatus> deleteOne(@PathVariable("id") long id) {
         sportCourtService.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);

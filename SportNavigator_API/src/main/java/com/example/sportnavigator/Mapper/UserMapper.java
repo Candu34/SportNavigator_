@@ -1,11 +1,11 @@
 package com.example.sportnavigator.Mapper;
 
 import com.example.sportnavigator.DTO.EncodedImage;
-import com.example.sportnavigator.DTO.UserDTO;
+import com.example.sportnavigator.DTO.Auth.UserDTO;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Models.UserImage;
-import com.example.sportnavigator.Service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     private final ImageMapper imageMapper;
-
+    private final PasswordEncoder passwordEncoder;
     public UserDTO userToUserDTO(User user){
         if (user == null) return null;
         EncodedImage encodedImage = imageMapper.ImageToEncodedImage(user.getImage());
@@ -41,6 +41,7 @@ public class UserMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setImage(userImage);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         return user;
     }
