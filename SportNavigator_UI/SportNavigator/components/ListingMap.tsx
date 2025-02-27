@@ -1,16 +1,16 @@
-import {View, Text, StyleSheet} from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from "expo-router";
-import  { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import MapView from "react-native-map-clustering";
 import Colors from "@/constants/Colors";
 import AppLoader from "@/components/AppLoader";
 import { API_URL } from '@/constants/api_url';
+import axios from 'axios';
 
-
-interface Props{
+interface Props {
     category: string;
 }
 
@@ -21,8 +21,7 @@ const INITIAL_REGION_ROMANIA = {
     longitudeDelta: 7,
 }
 
-
-const ListingMap = ({category}: Props) => {
+const ListingMap = ({ category }: Props) => {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -35,18 +34,14 @@ const ListingMap = ({category}: Props) => {
         router.push(`/listing/${item.sportCourtId}`);
     }
 
-    
-
-
     const item_url = `${API_URL}/coordinate?sport=${category}`;
 
     const fetchItems = async () => {
-        try{
+        try {
             setLoading(true);
-            const response = await fetch(item_url);
-            const responseJson = await response.json();
-            setItems(responseJson); 
-            setLoading(false)
+            const response = await axios.get(item_url);
+            setItems(response.data);
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching items:", error);
         }
@@ -58,74 +53,69 @@ const ListingMap = ({category}: Props) => {
     }, [category]);
 
     const getIconName = (sport: string) => {
-        switch(sport) {
+        switch (sport) {
             case "Football":
-                return "soccer"
+                return "soccer";
             case "Table_tennis":
-              return "table-tennis"
+                return "table-tennis";
             default:
                 return sport.toLocaleLowerCase();
-          }
+        }
     }
 
-  
     useEffect(() => {
-      (async () => {
-        
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied' as any);
-          return;
-        }
-  
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location as any);
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied' as any);
+                return;
+            }
 
-      })();
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location as any);
+        })();
     }, []);
-  
+
     let text = 'Waiting..';
     if (errorMsg) {
-      text = errorMsg;
+        text = errorMsg;
     } else if (location) {
-      text = JSON.stringify(location);
+        text = JSON.stringify(location);
     }
 
     return (
         <>
-        <View style={StyleSheet.absoluteFill}>
-            <MapView style={styles.map} showsUserLocation={true}
-            animationEnabled={false}
-            provider={PROVIDER_GOOGLE}
-            showsMyLocationButton={true}
-            initialRegion={INITIAL_REGION_ROMANIA}
-            clusterColor={Colors.primary}
-            clusterFontFamily='pop-sb'
-            >
-                {items.map((item: any) => (
-                    <Marker 
-                    onPress={() => onMarkerSeleced(item)}
-                    key={item.id}
-                    coordinate={{
-                        latitude: +item.latitude,
-                        longitude: +item.longitude
-                    }}
-                    >
-                        <View style={styles.marker}>
-                            <MaterialCommunityIcons name={icon as any} size={24} color={Colors.primary}/>
-                        </View>
-                    </Marker>
-                ))}
-            </MapView>
-        </View>
-        {loading && <AppLoader/>}
+            <View style={StyleSheet.absoluteFill}>
+                <MapView style={styles.map} showsUserLocation={true}
+                    animationEnabled={false}
+                    provider={PROVIDER_GOOGLE}
+                    showsMyLocationButton={true}
+                    initialRegion={INITIAL_REGION_ROMANIA}
+                    clusterColor={Colors.primary}
+                    clusterFontFamily='pop-sb'
+                >
+                    {items.map((item: any) => (
+                        <Marker
+                            onPress={() => onMarkerSeleced(item)}
+                            key={item.id}
+                            coordinate={{
+                                latitude: +item.latitude,
+                                longitude: +item.longitude
+                            }}
+                        >
+                            <View style={styles.marker}>
+                                <MaterialCommunityIcons name={icon as any} size={24} color={Colors.primary} />
+                            </View>
+                        </Marker>
+                    ))}
+                </MapView>
+            </View>
+            {loading && <AppLoader />}
         </>
     )
 };
 
 export default ListingMap;
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -153,4 +143,4 @@ const styles = StyleSheet.create({
             height: 10,
         }
     }
-})
+});

@@ -9,6 +9,7 @@ import com.example.sportnavigator.Models.Enums.Sport;
 import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class SportCourtMapper {
     private final ImageMapper imageMapper;
@@ -31,7 +33,10 @@ public class SportCourtMapper {
         court.setName(courtDTO.getName());
         court.setDescription(courtDTO.getDescription());
         court.setCourtType(courtDTO.getCourtType());
-        court.setUser(userService.getUserById(courtDTO.getUserID()));
+        if (courtDTO.getUserID() != null) {
+            log.info("User id while mapping sport court: {}", courtDTO.getUserID());
+            court.setUser(userService.getUserById(courtDTO.getUserID()));
+        }
         court.setSport(Sport.valueOf(courtDTO.getSport()));
         System.out.println("Sport: " + court.getSport());
         court.setCourtType(courtDTO.getCourtType());
@@ -53,7 +58,9 @@ public class SportCourtMapper {
         courtDTO.setName(sportCourt.getName());
         courtDTO.setDescription(sportCourt.getDescription());
         courtDTO.setCourtType(sportCourt.getCourtType());
-        courtDTO.setUserID(sportCourt.getUser().getId());
+        if (courtDTO.getUserID() != null){
+            courtDTO.setUserID(sportCourt.getUser().getId());
+        }
         courtDTO.setLatitude(sportCourt.getCoordinates().getLatitude());
         courtDTO.setLongitude(sportCourt.getCoordinates().getLongitude());
         courtDTO.setSport(sportCourt.getSport().toString());

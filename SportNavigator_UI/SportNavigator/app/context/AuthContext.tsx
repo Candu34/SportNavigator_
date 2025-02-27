@@ -47,6 +47,33 @@ export const AuthProvider = ({children}:any) => {
     loadToken();
   }, [])
 
+  useEffect(() => {
+    const checkTokenExpiration = async () => {
+      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      const refreshToken = await SecureStore.getItemAsync("my_jwt");
+  
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          const expirationTime = decodedToken.exp * 1000;
+  
+          if (Date.now() > expirationTime) {
+            const newToken = await refreshAccessToken(refreshToken!);
+            if (!newToken) {
+              await logout();
+            }
+          }
+        } catch (e) {
+          console.error("Token validation failed", e);
+          await logout();
+        }
+      }
+    };
+  
+    checkTokenExpiration();
+  }, []);
+  
+
   const register = async (email: string, password: string, firstName:string, lastName:string) => {
     try {
       return await axios.post(`${API_URL}/auth/signup`, {email, password, firstName, lastName});
@@ -58,45 +85,72 @@ export const AuthProvider = ({children}:any) => {
 
   const login = async (email: string, password: string) => {
     try {
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
       const result = await axios.post(`${API_URL}/auth/login`, {email, password});
+  
+      console.log("Login result", result.data);
 
-      console.log("file:AuthContext.tsx ~ login ~result:", result);
-
+      const { accessToken, refreshToken, user } = result.data;
+  
+      await SecureStore.setItemAsync(TOKEN_KEY, accessToken);
+      await SecureStore.setItemAsync('refresh_token', refreshToken);
+      await SecureStore.setItemAsync('user', JSON.stringify(user));
+  
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+  
       setAuthState({
-        token: (result as any).data.token,
+        token: accessToken,
         authenticated: true
       });
-
-      axios.defaults.headers.common['Authorization'] = `Bearer ${(result as any).data.accessToken}`;
-
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
-
+  
       return result;
-    } 
-    catch (e) {
+    } catch (e) {
       return {error: true, msg: (e as any).response.data.msg};
     }
-  }
+  };
 
   const logout = async () => {
     try {
       await axios.post(`${API_URL}/auth/logout`);
     } catch (e) {
-      return {error: true, msg: (e as any).response.data.msg};
+      console.error("Logout failed", e);
     }
-
+  
     await SecureStore.deleteItemAsync(TOKEN_KEY);
-
+    await SecureStore.deleteItemAsync("refresh_token");
+  
     axios.defaults.headers.common['Authorization'] = '';
-
+  
     setAuthState({
       token: null,
       authenticated: false
-    }); 
-  }
+    });
+  };
+  
 
-
-
+  const refreshAccessToken = async (refreshToken: string) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/refreshToken`, {
+        token: refreshToken,
+      });
+  
+      const newAccessToken = response.data.accessToken;
+  
+      await SecureStore.setItemAsync(TOKEN_KEY, newAccessToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+  
+      setAuthState({
+        token: newAccessToken,
+        authenticated: true
+      });
+  
+      return newAccessToken;
+    } catch (e) {
+      console.error("Error refreshing token:", e);
+      return null;
+    }
+  };
+  
 
   const value = {
     onRegister: register,

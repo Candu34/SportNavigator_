@@ -5,14 +5,20 @@ import com.example.sportnavigator.DTO.SportCourtDTO;
 import com.example.sportnavigator.DTO.SportCourtResponse;
 import com.example.sportnavigator.Mapper.SportCourtMapper;
 import com.example.sportnavigator.Models.SportCourt;
+import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.SportCourtService;
+import com.example.sportnavigator.Service.UserService;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +29,11 @@ import java.util.List;
 @RequestMapping("/api/courts")
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
+@Slf4j
 public class SportCourtController {
     private final SportCourtService sportCourtService;
     private final SportCourtMapper sportCourtMapper;
+    private final UserService userService;
 
 
     @PostMapping()
@@ -48,8 +56,7 @@ public class SportCourtController {
             throw new SportCourtNotCreatedException(errorMsg.toString());
 
         }
-
-        SportCourt sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
+        SportCourt sportCourt  = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
         Long sportCourtId = sportCourtService.save(sportCourt);
         return ResponseEntity.ok(sportCourtId);
     }
@@ -102,6 +109,7 @@ public class SportCourtController {
         }
         sportCourt = sportCourtMapper.SportCourtDTOToSportCourt(sportCourtDTO);
         sportCourt.setId(id);
+
         sportCourtService.save(sportCourt);
 
         return ResponseEntity.ok(HttpStatus.OK);

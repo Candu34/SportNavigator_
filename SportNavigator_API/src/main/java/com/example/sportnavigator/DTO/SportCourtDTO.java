@@ -42,7 +42,6 @@ public class SportCourtDTO {
     private List<EncodedImage> images;
 
     @JsonProperty
-    @NotNull
     private Long userID;
 
     @JsonProperty

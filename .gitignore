@@ -37,3 +37,4 @@ build/
 /data
 
 SportNavigator_API/src/main/resources/jwt
+SportNavigator_UI/SportNavigator/constants/api_url.ts

@@ -26,14 +26,13 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@Transactional(readOnly = true)
+@Transactional()
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public void saveUser(UserDTO userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -70,12 +69,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
     public void deleteUserByID(Long id) {
         userRepository.deleteById(id);
     }
 
-    @Transactional
     public void updateUser(UserDTO userDTO, BindingResult bindingResult) {
         Optional<User> userOptional = userRepository.findById(userDTO.getId());
 
@@ -128,6 +125,16 @@ public class UserService {
         user.setEmailVerified(true);
 
         return userRepository.save(user);
+    }
+
+    public User getUserByEmail(String email){
+        System.out.println("Email----------------------> "+email);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User with this email wasn't found");
+        }
+
+        return user.get();
     }
 
 

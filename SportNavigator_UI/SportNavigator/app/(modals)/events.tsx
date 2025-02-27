@@ -1,8 +1,10 @@
-import { View, FlatList, ListRenderItem, ActivityIndicator } from 'react-native';
+import { View, FlatList, ListRenderItem, ActivityIndicator, Text } from 'react-native';
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import React, { useState, useCallback } from 'react';
 import { defaultStyles } from "@/constants/Styles";
 import { ListItem } from "@/components/ExpandListItem";
+import axios from 'axios';
+import { API_URL } from "@/constants/api_url";
 
 const Page = () => {
     const [loading, setLoading] = useState(false);
@@ -13,23 +15,24 @@ const Page = () => {
     const params = useLocalSearchParams();
     const courtId = params.id;
 
-    const initialPage = `https://3q55nqgg-8080.euw.devtunnels.ms/api/events/court/${courtId}`;
+    const initialPage = `${API_URL}/events/court/${courtId}`;
 
-    const fetchItems = async () => {
+    const fetchItems = async (url: string) => {
         try {
             setLoading(true);
-            const response = await fetch(initialPage);
-            const responseJson = await response.json();
+            console.log(`Fetching items from URL: ${url}`);
+            const response = await axios.get(url);
+            const responseData = response.data;
 
-            if (responseJson.eventsDTO && responseJson.responseInfo) {
-                setItems(responseJson.eventsDTO);
-                console.log(responseJson.responseInfo.pageNo);
-                const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
-                setIsLast(responseJson.responseInfo.last);
+            if (responseData.eventsDTO && responseData.responseInfo) {
+                setItems(responseData.eventsDTO);
+                const nextPageNo = parseInt(responseData.responseInfo.pageNo) + 1;
+                setIsLast(responseData.responseInfo.last);
                 const nextUrl = `${initialPage}?pageNo=${nextPageNo}`;
                 setNextPage(nextUrl);
+                console.log(`Next page URL: ${nextUrl}`);
             } else {
-                console.error("Unexpected response structure", responseJson);
+                console.error("Unexpected response structure", responseData);
             }
 
             setLoading(false);
@@ -39,29 +42,33 @@ const Page = () => {
         }
     };
 
-    const loadMore = async () => { 
-        if (loading){
+    const loadMore = async () => {
+        if (loading || isLast) {
             return;
         }
-            if (!isLast) {
-                setLoading(true);
 
-                const response = await fetch(nextPage as any);
-                const responseJson = await response.json();
-                setItems((existingItems) => {
-                    return [...existingItems, ...responseJson.favoriteSportCourts] as any;
-                });
+        try {
+            setLoading(true);
+            console.log(`Loading more items from URL: ${nextPage}`);
+            const response = await axios.get(nextPage);
+            const responseData = response.data;
 
-                const nextPageNo = parseInt(responseJson.responseInfo.pageNo) + 1;
-                const nextUrl = nextPage.replace(/pageNo=\d+/, 'pageNo=' + nextPageNo);
-                setNextPage(nextUrl as any);
-        };  
+            setItems((existingItems) => [...existingItems, ...responseData.eventsDTO]);
+            const nextPageNo = parseInt(responseData.responseInfo.pageNo) + 1;
+            const nextUrl = nextPage.replace(/pageNo=\d+/, `pageNo=${nextPageNo}`);
+            setNextPage(nextUrl);
+            setIsLast(responseData.responseInfo.last);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error loading more items:", error);
+            setLoading(false);
+        }
     };
 
     useFocusEffect(
         useCallback(() => {
-            fetchItems();
-        }, [])
+            fetchItems(initialPage);
+        }, [initialPage])
     );
 
     const renderRow: ListRenderItem<any> = ({ item }) => {
@@ -72,20 +79,26 @@ const Page = () => {
 
     return (
         <View style={defaultStyles.container}>
-            <FlatList
-                data={items}
-                renderItem={renderRow}
-                keyExtractor={(item) => item.id.toString()}
-                onEndReached={loadMore}
-                onEndReachedThreshold={1}
-                ListFooterComponent={() => loading && <ActivityIndicator />}
-                showsVerticalScrollIndicator={false}
-                initialNumToRender={3}
-                windowSize={5}
-            />
+            {loading && items.length === 0 ? (
+                <ActivityIndicator size="large" />
+            ) : (
+                <FlatList
+                    data={items}
+                    renderItem={renderRow}
+                    keyExtractor={(item) => item.id.toString()}
+                    onEndReached={loadMore}
+                    onEndReachedThreshold={1}
+                    ListFooterComponent={() => loading && <ActivityIndicator />}
+                    showsVerticalScrollIndicator={false}
+                    initialNumToRender={3}
+                    windowSize={5}
+                />
+            )}
+            {!loading && items.length === 0 && (
+                <Text style={{ textAlign: 'center', marginTop: 20 }}>No events found.</Text>
+            )}
         </View>
     );
 }
 
 export default Page;
- 

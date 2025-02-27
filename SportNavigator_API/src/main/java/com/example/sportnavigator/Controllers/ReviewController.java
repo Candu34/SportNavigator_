@@ -69,6 +69,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         reviewService.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
