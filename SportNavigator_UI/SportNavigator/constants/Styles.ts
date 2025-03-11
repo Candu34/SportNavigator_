@@ -26,10 +26,6 @@ export const defaultStyles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'pop-b',
   },
-  btnIcon: {
-    position: 'absolute',
-    left: 16,
-  },
   footer: {
     position: 'absolute',
     height: 100,

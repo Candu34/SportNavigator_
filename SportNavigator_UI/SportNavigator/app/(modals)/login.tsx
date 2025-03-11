@@ -46,7 +46,7 @@ const Page = () => {
           }
         } catch (error) {
           console.error('Login failed:', error);
-          Alert.alert('Login failed', error.message);
+          Alert.alert('Login failed', error.message.toString());
         }
       };
 
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 16,
         fontFamily: 'pop-sb',
+        marginLeft: 20,
       },
 })
 export default Page

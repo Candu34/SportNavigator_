@@ -127,17 +127,16 @@ const handleSubmit = async () => {
 const pickImage = async () => {
     let arr = [];
 
-
     let { status } = await ImagePicker.requestCameraPermissionsAsync(); 
   if (status !== 'granted') {
     Alert.alert('Error', 'Sorry, we need camera roll permissions to choose images.');
     return;
   }
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [16, 9],
-      quality: 1,
+      quality: 0.5,
       allowsMultipleSelection: false,
       base64: true,
     });
