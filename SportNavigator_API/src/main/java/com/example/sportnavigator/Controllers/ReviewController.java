@@ -1,7 +1,7 @@
 package com.example.sportnavigator.Controllers;
 
 import com.example.sportnavigator.DTO.ResponeInfo.DataResponse;
-import com.example.sportnavigator.DTO.review.RatingResponse;
+import com.example.sportnavigator.DTO.review.RatingData;
 import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -112,8 +111,8 @@ public class ReviewController {
     }
 
     @GetMapping("/rating")
-    public ResponseEntity<RatingResponse> getRatingInfo(@RequestParam(value = "courtId") Long courtId) {
-        RatingResponse ratingResponse = reviewService.getReviewInfo(courtId);
+    public ResponseEntity<RatingData> getRatingInfo(@RequestParam(value = "courtId") Long courtId) {
+        RatingData ratingResponse = reviewService.getReviewInfo(courtId);
         return new ResponseEntity<>(ratingResponse, HttpStatus.OK);
     }
 

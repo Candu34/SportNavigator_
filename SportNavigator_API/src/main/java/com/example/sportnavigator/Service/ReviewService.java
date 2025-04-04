@@ -2,11 +2,10 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.DTO.ResponeInfo.DataResponse;
 import com.example.sportnavigator.DTO.ResponeInfo.ResponseInfo;
-import com.example.sportnavigator.DTO.review.RatingResponse;
+import com.example.sportnavigator.DTO.review.RatingData;
 import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
-import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Repository.ReviewRepository;
 import com.example.sportnavigator.Utils.Excetions.ReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -90,16 +89,16 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public RatingResponse getReviewInfo(Long courtId) {
+    public RatingData getReviewInfo(Long courtId) {
         Long noOfReviews = reviewRepository.countAllBySportCourtId(courtId);
         Double sumOfRatings = reviewRepository.getTotalAmountSum(courtId);
 
         if (noOfReviews == 0 || sumOfRatings == null) {
-            return new RatingResponse(0L, 0F);
+            return new RatingData(0L, 0F);
         }
 
         Float averageRating = (float) (sumOfRatings / noOfReviews);
-        return new RatingResponse(noOfReviews, averageRating);
+        return new RatingData(noOfReviews, averageRating);
     }
 
 

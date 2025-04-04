@@ -1,6 +1,7 @@
 package com.example.sportnavigator.DTO;
 
 
+import com.example.sportnavigator.DTO.review.RatingData;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -53,6 +54,9 @@ public class SportCourtDTO {
     @Max(value = 90, message = "wrong coordinate")
     @JsonProperty
     private double longitude;
+
+    private RatingData ratingData;
+
 
 
 
