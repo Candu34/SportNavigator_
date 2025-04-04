@@ -1,6 +1,7 @@
 package com.example.sportnavigator.Controllers;
 
 import com.example.sportnavigator.DTO.ResponeInfo.DataResponse;
+import com.example.sportnavigator.DTO.review.RatingResponse;
 import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +30,6 @@ public class ReviewController {
 
 
     @GetMapping()
-    @ResponseBody()
     public List<ReviewDTO> findAll() {
         List<ReviewDTO> reviewDTOS = new ArrayList<>();
         List<Review> reviews = reviewService.findAll();
@@ -40,7 +41,6 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    @ResponseBody()
     public ReviewDTO findOne(@PathVariable Long id) {
         Review review = reviewService.findById(id);
         return reviewMapper.ReviewToReviewDTO(review);
@@ -49,6 +49,13 @@ public class ReviewController {
     @PostMapping()
     public ResponseEntity<HttpStatus> save(@RequestBody @Valid ReviewDTO reviewDTO,
                                            BindingResult bindingResult) {
+        checkBindingResult(reviewDTO, bindingResult);
+        Review review = reviewMapper.ReviewDTOToReview(reviewDTO);
+        reviewService.save(review);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private void checkBindingResult(@RequestBody @Valid ReviewDTO reviewDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
 
@@ -63,10 +70,19 @@ public class ReviewController {
 
             throw new ReviewNotCreatedException(errorMsg.toString());
         }
+    }
+
+    @PutMapping()
+    public ResponseEntity<HttpStatus> update(@RequestBody @Valid ReviewDTO reviewDTO,
+                                             BindingResult bindingResult){
+        checkBindingResult(reviewDTO, bindingResult);
         Review review = reviewMapper.ReviewDTOToReview(reviewDTO);
+        review.setId(reviewDTO.getId());
         reviewService.save(review);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -76,7 +92,6 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{userId}")
-    @ResponseBody()
     public List<ReviewDTO> getReviewsByUserId(@PathVariable Long userId) {
         List<Review> reviews = reviewService.findByUserId(userId);
         List<ReviewDTO> reviewDTOS = new ArrayList<>();
@@ -86,13 +101,20 @@ public class ReviewController {
         return reviewDTOS;
     }
 
-    @GetMapping("/court/{courtId}")
-    public ResponseEntity<DataResponse<ReviewDTO>> getReviewsByCourtId(@PathVariable Long courtId,
-                                               @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-                                               @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+    @GetMapping("/court")
+    public ResponseEntity<DataResponse<ReviewDTO>> getReviewsByCourtId(@RequestParam(value = "courtId", required = true) Long courtId,
+                                                                       @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                                                       @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                                                       @RequestParam(value = "rating", defaultValue = "0") int rating) {
 
-        DataResponse<ReviewDTO> reviewResponse = reviewService.findBySportCourtId(courtId, pageSize, pageNo);
+        DataResponse<ReviewDTO> reviewResponse = reviewService.findBySportCourtId(courtId, pageSize, pageNo, rating);
         return new ResponseEntity<>(reviewResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/rating")
+    public ResponseEntity<RatingResponse> getRatingInfo(@RequestParam(value = "courtId") Long courtId) {
+        RatingResponse ratingResponse = reviewService.getReviewInfo(courtId);
+        return new ResponseEntity<>(ratingResponse, HttpStatus.OK);
     }
 
 }

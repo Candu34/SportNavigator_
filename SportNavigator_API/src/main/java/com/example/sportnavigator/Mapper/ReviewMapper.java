@@ -25,6 +25,7 @@ public class ReviewMapper {
 
     public ReviewDTO ReviewToReviewDTO(Review review) {
         ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setId(review.getId());
         reviewDTO.setDescription(review.getDescription());
         reviewDTO.setRating(review.getRating());
         reviewDTO.setCreatedAt(review.getCreatedAt());

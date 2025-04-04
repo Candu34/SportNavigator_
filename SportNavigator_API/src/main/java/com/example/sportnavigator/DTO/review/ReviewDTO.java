@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ReviewDTO {
 
+    private Long id;
+
     @JsonProperty
     private String description;
 
