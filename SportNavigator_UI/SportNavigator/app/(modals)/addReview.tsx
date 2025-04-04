@@ -9,6 +9,8 @@ import { API_URL } from "@/constants/api_url";
 import axios from "axios";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Alert } from "react-native";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Colors from "@/constants/Colors";
 
 
 const Page = () => {
@@ -17,6 +19,7 @@ const Page = () => {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const router = useRouter();
     const params = useLocalSearchParams();
@@ -50,10 +53,17 @@ const Page = () => {
   };
 
   const handleSummit = async () => {
-    if (description.length === 0 || rating === 0) {
+    if (description.length === 0) {
+        setErrorMsg('Please fill the description');
         setError(true);
         return;
     } 
+
+    if (rating === 0) {
+        setErrorMsg('Please select a rating');
+        setError(true);
+        return;
+    }
     setError(false);
 
     const reviewDTO = {
@@ -92,19 +102,19 @@ const Page = () => {
         <>
         <View style={styles.container}>
         <TextInput autoCapitalize='none' multiline={true}
-                                numberOfLines={6}
+                                numberOfLines={10}
                                 placeholder='Description'
                                 value={description}
-                                style={[defaultStyles.inputField, { marginBottom: 30, fontFamily: 'pop', height: 80 }]}
+                                style={[defaultStyles.inputField, { marginBottom: 30, fontFamily: 'pop', height: 110, borderRadius: 30 }]}
                                 onChangeText={handleDescriptionChange} />
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
         {[1, 2, 3, 4, 5].map((star) => (
           <TouchableOpacity key={star} onPress={() => setRating(star)}>
-            <FontAwesome
-              name="star"
+            <FontAwesome5
+              name="basketball-ball"
               size={32}
-              color={star <= rating ? "orange" : "gray"} 
-              style={{ marginHorizontal: 5, marginBottom: 30 }}
+              color={star <= rating ? Colors.primary : Colors.dark} 
+              style={{ marginHorizontal: 10, marginBottom: 30 }}
             />
           </TouchableOpacity>
         ))}
@@ -114,7 +124,7 @@ const Page = () => {
             style={defaultStyles.btn}>
             <Text style={defaultStyles.btnText}>Leave Review</Text>
         </TouchableOpacity>
-        {error && <Text style={styles.errorText}>Please fill in all fields</Text>}
+        {error && <Text style={styles.errorText}>{errorMsg}</Text>}
       </View>
         </>
 )}
