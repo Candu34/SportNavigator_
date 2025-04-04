@@ -227,6 +227,18 @@ const Page = () => {
             </View>
             <Text style={styles.description}>{item.description}</Text>
           </View>
+          <View>
+          <Link style={{color: 'blue'}} asChild
+                href={{
+                  pathname: "/(modals)/addReview",
+                  params: { id: id },
+                }}
+              >
+                <TouchableOpacity style={styles.buttonLink} >
+                  <Text style={styles.link}>Leave an review</Text>
+                </TouchableOpacity>
+              </Link>
+          </View>
         </Animated.ScrollView>
 
         {isLoaded && (
@@ -327,6 +339,16 @@ const styles = StyleSheet.create({
   },
   icon: {
     zIndex: 800,
+  },
+  link:{
+    color: Colors.primary, 
+    fontSize: 16,
+    fontFamily: 'pop-sb', 
+    textDecorationLine: 'underline', 
+    paddingLeft: 24, 
+  },
+  buttonLink: {
+
   }
 });
 

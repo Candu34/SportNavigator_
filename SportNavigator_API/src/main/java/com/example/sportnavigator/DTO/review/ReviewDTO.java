@@ -1,4 +1,4 @@
-package com.example.sportnavigator.DTO;
+package com.example.sportnavigator.DTO.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +21,8 @@ public class ReviewDTO {
     @Min(value = 1, message = "rating should be between 1 and 5")
     @Max(value = 5, message = "rating should be between 1 and 5")
     private int rating;
+
+    private LocalDateTime createdAt;
 
     @JsonProperty
     private Long userID;

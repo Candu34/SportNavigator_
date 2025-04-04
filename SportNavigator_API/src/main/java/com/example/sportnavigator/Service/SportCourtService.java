@@ -9,7 +9,9 @@ import com.example.sportnavigator.Models.Enums.Sport;
 import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Repository.SportCourtRepository;
+import com.example.sportnavigator.Repository.UserRepository;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
+import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
 import com.example.sportnavigator.Utils.Excetions.WrongCoordinateRangeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class SportCourtService {
     private final SportCourtRepository sportCourtRepository;
     private final SportCourtMapper sportCourtMapper;
+    private final UserRepository userRepository;
 
     public SportCourt getOne(Long id) {
         Optional<SportCourt> sportCourt = sportCourtRepository.findById(id);
@@ -84,6 +87,14 @@ public class SportCourtService {
 
     public void deleteById(Long id) {
         sportCourtRepository.deleteById(id);
+    }
+
+    public Long countByUserId(Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException("User with this id wasn't found");
+        }
+        return sportCourtRepository.countAllByUser(userOptional.get());
     }
 
 

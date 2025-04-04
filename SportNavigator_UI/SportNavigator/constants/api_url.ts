@@ -1,1 +1,2 @@
-export const API_URL = "https://zk3z77d0-8080.euw.devtunnels.ms/api";
+export const API_URL = "https://8tswfgv0-8080.euw.devtunnels.ms/api";
+export const S3_URL = "";

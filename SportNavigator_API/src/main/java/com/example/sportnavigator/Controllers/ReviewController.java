@@ -1,6 +1,7 @@
 package com.example.sportnavigator.Controllers;
 
-import com.example.sportnavigator.DTO.ReviewDTO;
+import com.example.sportnavigator.DTO.ResponeInfo.DataResponse;
+import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
 import com.example.sportnavigator.Service.ReviewService;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -87,14 +87,12 @@ public class ReviewController {
     }
 
     @GetMapping("/court/{courtId}")
-    @ResponseBody()
-    public List<ReviewDTO> getReviewsByCourtId(@PathVariable Long courtId){
-        List<Review> reviews = reviewService.findByUserId(courtId);
-        List<ReviewDTO> reviewDTOS = new ArrayList<>();
-        for (Review review : reviews) {
-            reviewDTOS.add(reviewMapper.ReviewToReviewDTO(review));
-        }
-        return reviewDTOS;
+    public ResponseEntity<DataResponse<ReviewDTO>> getReviewsByCourtId(@PathVariable Long courtId,
+                                               @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                               @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+
+        DataResponse<ReviewDTO> reviewResponse = reviewService.findBySportCourtId(courtId, pageSize, pageNo);
+        return new ResponseEntity<>(reviewResponse, HttpStatus.OK);
     }
 
 }

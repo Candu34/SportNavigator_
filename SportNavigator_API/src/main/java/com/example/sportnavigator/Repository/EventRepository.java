@@ -14,4 +14,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     public Long countBySportCourt_Id(Long id);
 
+    public Long countByUserId(Long userId);
+
 }

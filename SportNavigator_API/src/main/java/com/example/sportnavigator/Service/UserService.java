@@ -2,6 +2,7 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.DTO.Auth.RegisterUserDTO;
 import com.example.sportnavigator.DTO.Auth.UserDTO;
+import com.example.sportnavigator.DTO.user.UserChangeNameRequestDto;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
 import com.example.sportnavigator.Models.Authentification.Role;
@@ -77,7 +78,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(userDTO.getId());
 
         if (userOptional.isEmpty()) {
-            //TODO exception throwing
+            throw new UserNotFoundException("User with this id wasn't found");
         }
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -96,6 +97,28 @@ public class UserService {
             user.setLastUpdated(LocalDateTime.now());
             userRepository.save(user);
         }
+    }
+
+    public User updateUser(UserChangeNameRequestDto requestDto, BindingResult bindingResult){
+        Optional<User> userOptional = userRepository.findById(requestDto.id());
+
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("User with this id wasn't found");
+        }
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
+            }
+            throw new UserNotCreatedException(errorMsg.toString());
+        }
+        User user = userOptional.get();
+        user.setFirstName(requestDto.firstName());
+        user.setLastName(requestDto.lastName());
+        return userRepository.save(user);
     }
 
     public User getAuthentificatedUser() {

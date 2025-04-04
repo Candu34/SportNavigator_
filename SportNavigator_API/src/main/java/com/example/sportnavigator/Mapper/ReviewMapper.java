@@ -1,8 +1,7 @@
 package com.example.sportnavigator.Mapper;
 
-import com.example.sportnavigator.DTO.ReviewDTO;
+import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Models.Review;
-import com.example.sportnavigator.Repository.SportCourtRepository;
 import com.example.sportnavigator.Service.SportCourtService;
 import com.example.sportnavigator.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class ReviewMapper {
     private final UserService userService;
     private final SportCourtService sportCourtService;
+
     public Review ReviewDTOToReview(ReviewDTO reviewDTO) {
         Review review = new Review();
         review.setDescription(reviewDTO.getDescription());
@@ -27,6 +27,7 @@ public class ReviewMapper {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setDescription(review.getDescription());
         reviewDTO.setRating(review.getRating());
+        reviewDTO.setCreatedAt(review.getCreatedAt());
         reviewDTO.setSportCourtID(review.getSportCourt().getId());
         reviewDTO.setUserID(review.getUser().getId());
 

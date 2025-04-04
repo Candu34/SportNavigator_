@@ -91,5 +91,9 @@ public class EventService {
         return eventsResponse;
     }
 
+    public Long countByUserId(Long userId){
+        return eventRepository.countByUserId(userId);
+    }
+
 
 }
