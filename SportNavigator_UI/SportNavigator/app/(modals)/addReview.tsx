@@ -7,9 +7,9 @@ import { StyleSheet } from "react-native";
 
 
 const Page = () => {
-    const [score, setScore] = useState(1);
     const [rating, setRating] = useState(0);
     const [description, setDescription] = useState('');
+    const [error, setError] = useState(false);
 
 
     const handleDescriptionChange = (text: string) => {
@@ -17,7 +17,11 @@ const Page = () => {
   };
 
   const handleSummit = () => {
-    console.log("Sending review to server");
+    if (description.length === 0 && rating === 0) {
+        setError(true);
+        return;
+    }
+
   }
 
 
@@ -47,6 +51,7 @@ const Page = () => {
             style={defaultStyles.btn}>
             <Text style={defaultStyles.btnText}>Leave Review</Text>
         </TouchableOpacity>
+        {error && <Text style={styles.errorText}>Please fill in all fields</Text>}
       </View>
         </>
 )}
@@ -58,6 +63,14 @@ const Page = () => {
             backgroundColor: '#fff',
             padding: 26,
             paddingTop: 150,
+        },
+        errorText: {
+            color: 'red',
+            marginTop: 15,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            fontFamily: 'pop',
+            textDecorationLine: 'underline'
         }
     })
 
