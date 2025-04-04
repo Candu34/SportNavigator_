@@ -16,8 +16,11 @@ public interface SportCourtRepository extends JpaRepository<SportCourt, Long> {
     public Page<SportCourt> getAllByUser(User user, Pageable pageable);
 
     public Page<SportCourt> getAllBySport(Sport sport, Pageable pageable);
+
     public Page<SportCourt> findSportCourtsByCourtType(String courtType, Pageable pageable);
 
     public Page<SportCourt> findSportCourtsBySportAndCourtType(Sport sport, String courtType, Pageable pageable);
+
+    public Long countAllByUser(User user);
 
 }

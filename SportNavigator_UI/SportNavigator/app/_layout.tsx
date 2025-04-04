@@ -3,7 +3,7 @@ import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 export {
@@ -120,6 +120,19 @@ function RootLayoutNav() {
           fontFamily: 'pop-sb'
         },
         headerTitle: "Create event",
+        headerTitleAlign: 'center',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
+      <Stack.Screen name="(modals)/addReview" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb'
+        },
+        headerTitle: "Leave an review",
         headerTitleAlign: 'center',
         presentation: 'fullScreenModal',
         headerLeft: () => (

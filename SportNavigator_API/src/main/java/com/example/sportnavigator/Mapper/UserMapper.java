@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 @AllArgsConstructor
 public class UserMapper {
@@ -26,6 +28,8 @@ public class UserMapper {
         userDTO.setLastName(user.getLastName());
         userDTO.setImage(encodedImage);
 
+        DateTimeFormatter formatters = DateTimeFormatter.ofPattern("d/MM/uuuu");
+        userDTO.setScience(user.getCreatedAt().format(formatters));
         return userDTO;
     }
 

@@ -38,6 +38,9 @@ public class UserDTO {
     @JsonProperty("password")
     private String password;
 
+    @JsonProperty("science")
+    private String science;
+
     @JsonProperty
     EncodedImage image;
 

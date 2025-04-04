@@ -2,6 +2,7 @@ package com.example.sportnavigator.Controllers;
 
 
 import com.example.sportnavigator.DTO.Auth.UserDTO;
+import com.example.sportnavigator.DTO.user.UserChangeNameRequestDto;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;
@@ -63,13 +64,14 @@ public class UserController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable Long id,
-                                             @RequestBody @Valid UserDTO userDTO,
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/change-name/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Long id,
+                                             @RequestBody @Valid UserChangeNameRequestDto requestDto,
                                              BindingResult bindingResult) {
 
-        userService.updateUser(userDTO, bindingResult);
-        return ResponseEntity.ok(HttpStatus.OK);
+        UserDTO userDto = userMapper.userToUserDTO(userService.updateUser(requestDto, bindingResult));
+
+        return ResponseEntity.ok(userDto);
     }
 }

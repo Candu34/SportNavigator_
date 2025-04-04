@@ -15,6 +15,8 @@ import AppLoader from "@/components/AppLoader";
 import { API_URL } from "@/constants/api_url";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import openMap from 'react-native-open-maps';
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
@@ -42,16 +44,12 @@ const Page = () => {
 
   const item_url = `${API_URL}/courts/${id}`;
 
-  const shareCourt = async () => {
-    try {
-      await Share.share({
-        title: item.name,
-        url: item_url,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const openMaps = () => {
+     openMap({
+      travelType: 'drive',
+      end: `${item.latitude},${item.longitude}`,
+     })
+  }
   
 
   const addToFavorite = async (courtId: string) => {
@@ -91,10 +89,7 @@ const Page = () => {
           throw new Error("Invalid user data");
       }
       const response = await axios.get(`${API_URL}/favorite/verify?courtId=${id}&userId=${user.id}`);
-      const isFavoriteString = response.data;
       setIsFavorite(response.data);
-      console.log("Favorite String ", isFavoriteString);
-      console.log("Favorite status:", isFavorite);
     } catch (error) {
       console.error('Error verifying favorite status:', error);
     }
@@ -119,8 +114,8 @@ const Page = () => {
       headerRight: () => (
         <View style={styles.bar}>
           {!loading && (
-            <TouchableOpacity style={styles.roundButton} onPress={shareCourt}>
-              <Ionicons name="share-outline" size={22} color={"#000"} />
+            <TouchableOpacity style={styles.roundButton} onPress={openMaps}>
+              <Fontisto name="map" size={22} color={"#000"} />
             </TouchableOpacity>
           )}
           {!loading && (
@@ -232,6 +227,18 @@ const Page = () => {
             </View>
             <Text style={styles.description}>{item.description}</Text>
           </View>
+          <View>
+          <Link style={{color: 'blue'}} asChild
+                href={{
+                  pathname: "/(modals)/addReview",
+                  params: { id: id },
+                }}
+              >
+                <TouchableOpacity style={styles.buttonLink} >
+                  <Text style={styles.link}>Leave an review</Text>
+                </TouchableOpacity>
+              </Link>
+          </View>
         </Animated.ScrollView>
 
         {isLoaded && (
@@ -332,6 +339,16 @@ const styles = StyleSheet.create({
   },
   icon: {
     zIndex: 800,
+  },
+  link:{
+    color: Colors.primary, 
+    fontSize: 16,
+    fontFamily: 'pop-sb', 
+    textDecorationLine: 'underline', 
+    paddingLeft: 24, 
+  },
+  buttonLink: {
+
   }
 });
 

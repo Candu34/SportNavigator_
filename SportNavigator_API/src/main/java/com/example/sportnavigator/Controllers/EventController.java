@@ -99,6 +99,11 @@ public class EventController {
         return eventService.countBySportCourtId(sportCourtId);
     }
 
+//    @GetMapping("/counter/${userId}")
+//    public Long countByUser(@PathVariable Long userId){
+//        return eventService.countByUserId(userId);
+//    }
+
 
 
 }

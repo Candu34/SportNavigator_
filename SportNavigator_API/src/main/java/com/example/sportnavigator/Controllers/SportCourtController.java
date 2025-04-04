@@ -116,4 +116,9 @@ public class SportCourtController {
     }
 
 
+//    @GetMapping("/count/${userId}")
+//    public ResponseEntity<Long> countByUserId(@PathVariable Long userId) {
+//        return new ResponseEntity<>(sportCourtService.countByUserId(userId), HttpStatus.OK);
+//    }
+
 }

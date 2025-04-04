@@ -33,6 +33,7 @@ const Layout = () => {
             <Ionicons name="add-circle-outline" color={color} size={size+3} />
            }}/>
             <Tabs.Screen name="profile" options={{
+            headerShown: false,
             tabBarLabel: 'Profile',
             tabBarIcon: ({ color, size}) =>  
             <Octicons  name="person" color={color} size={size+1} />
