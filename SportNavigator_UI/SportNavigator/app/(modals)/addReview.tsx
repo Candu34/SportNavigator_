@@ -50,7 +50,7 @@ const Page = () => {
   };
 
   const handleSummit = async () => {
-    if (description.length === 0 && rating === 0) {
+    if (description.length === 0 || rating === 0) {
         setError(true);
         return;
     } 
