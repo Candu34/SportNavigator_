@@ -141,6 +141,17 @@ function RootLayoutNav() {
           </TouchableOpacity>
         )
       }} />
+       <Stack.Screen name="(modals)/viewReviews" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb'
+        },
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
       <Stack.Screen name="(modals)/events" options={{
         headerTitleStyle: {
           fontFamily: 'pop-sb'
