@@ -6,6 +6,7 @@ import com.example.sportnavigator.DTO.review.ReviewDTO;
 import com.example.sportnavigator.Mapper.ReviewMapper;
 import com.example.sportnavigator.Models.Review;
 import com.example.sportnavigator.Service.ReviewService;
+import com.example.sportnavigator.Service.SportCourtService;
 import com.example.sportnavigator.Utils.Excetions.ReviewNotCreatedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
+    private final SportCourtService sportCourtService;
 
 
     @GetMapping()
@@ -50,6 +52,7 @@ public class ReviewController {
                                            BindingResult bindingResult) {
         checkBindingResult(reviewDTO, bindingResult);
         Review review = reviewMapper.ReviewDTOToReview(reviewDTO);
+        review.setSportCourt(sportCourtService.getOne(reviewDTO.getSportCourtID()));
         reviewService.save(review);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -77,6 +80,7 @@ public class ReviewController {
         checkBindingResult(reviewDTO, bindingResult);
         Review review = reviewMapper.ReviewDTOToReview(reviewDTO);
         review.setId(reviewDTO.getId());
+        review.setSportCourt(sportCourtService.getOne(reviewDTO.getSportCourtID()));
         reviewService.save(review);
         return ResponseEntity.ok(HttpStatus.OK);
     }

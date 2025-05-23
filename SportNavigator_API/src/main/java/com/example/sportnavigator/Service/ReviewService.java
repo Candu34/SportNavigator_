@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -97,7 +99,9 @@ public class ReviewService {
             return new RatingData(0L, 0F);
         }
 
-        Float averageRating = (float) (sumOfRatings / noOfReviews);
+        Float averageRating = BigDecimal.valueOf(sumOfRatings / noOfReviews)
+                .setScale(1, RoundingMode.HALF_UP)
+                .floatValue();
         return new RatingData(noOfReviews, averageRating);
     }
 

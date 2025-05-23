@@ -11,14 +11,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ReviewMapper {
     private final UserService userService;
-    private final SportCourtService sportCourtService;
 
     public Review ReviewDTOToReview(ReviewDTO reviewDTO) {
         Review review = new Review();
         review.setDescription(reviewDTO.getDescription());
         review.setRating(reviewDTO.getRating());
         review.setUser(userService.getUserById(reviewDTO.getUserID()));
-        review.setSportCourt(sportCourtService.getOne(reviewDTO.getSportCourtID()));
 
         return review;
     }
