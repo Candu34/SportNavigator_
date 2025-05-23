@@ -5,7 +5,6 @@ import com.example.sportnavigator.DTO.SportCourtDTO;
 import com.example.sportnavigator.DTO.SportCourtResponse;
 import com.example.sportnavigator.Mapper.SportCourtMapper;
 import com.example.sportnavigator.Models.SportCourt;
-import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.SportCourtService;
 import com.example.sportnavigator.Service.UserService;
 import com.example.sportnavigator.Utils.Excetions.SportCourtNotCreatedException;
@@ -16,9 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -74,7 +70,7 @@ public class SportCourtController {
 
     @GetMapping("/{id}")
     public SportCourtDTO findOne(@PathVariable("id") Long id) {
-        return sportCourtMapper.SportCourtToSportCourtDTO(sportCourtService.getOne(id));
+        return sportCourtMapper.sportCourtToSportCourtDTO(sportCourtService.getOne(id));
     }
 
     @DeleteMapping("/{id}")

@@ -4,7 +4,6 @@ import com.example.sportnavigator.DTO.EncodedImage;
 import com.example.sportnavigator.DTO.SportCourtDTO;
 import com.example.sportnavigator.Models.Coordinate;
 import com.example.sportnavigator.Models.CourtImage;
-import com.example.sportnavigator.Models.Enums.CourtType;
 import com.example.sportnavigator.Models.Enums.Sport;
 import com.example.sportnavigator.Models.SportCourt;
 import com.example.sportnavigator.Service.ReviewService;
@@ -14,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @Slf4j
@@ -54,7 +51,7 @@ public class SportCourtMapper {
         return court;
     }
 
-    public SportCourtDTO SportCourtToSportCourtDTO(SportCourt sportCourt) {
+    public SportCourtDTO sportCourtToSportCourtDTO(SportCourt sportCourt) {
         SportCourtDTO courtDTO = new SportCourtDTO();
         courtDTO.setId(sportCourt.getId());
         courtDTO.setName(sportCourt.getName());

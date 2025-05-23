@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +62,7 @@ public class SportCourtService {
             sportCourts = sportCourtRepository.findSportCourtsByCourtType(courtType, pageable);
         }
 
-        List<SportCourtDTO> content = sportCourts.stream().map(sportCourtMapper::SportCourtToSportCourtDTO).toList();
+        List<SportCourtDTO> content = sportCourts.stream().map(sportCourtMapper::sportCourtToSportCourtDTO).toList();
         SportCourtResponse sportCourtResponse = new SportCourtResponse();
         ResponseInfo responseInfo = new ResponseInfo();
         sportCourtResponse.setContent(content);

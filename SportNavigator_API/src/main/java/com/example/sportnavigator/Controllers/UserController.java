@@ -57,7 +57,6 @@ public class UserController {
         return userMapper.userToUserDTO(userService.getUserById(id));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         userService.deleteUserByID(id);
