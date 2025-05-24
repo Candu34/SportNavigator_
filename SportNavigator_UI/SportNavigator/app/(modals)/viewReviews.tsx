@@ -17,31 +17,30 @@ import { defaultStyles } from "@/constants/Styles";
 import avatarPlaceholder from "../../assets/images/avatar-people-person-svgrepo-com.png";
 import Colors from "@/constants/Colors";
 
+// Utility to show relative time
 function getRelativeTime(dateStr) {
   if (!dateStr) return "";
   const now = new Date();
   const reviewDate = new Date(dateStr);
 
-  const nowUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  const reviewUtc = Date.UTC(reviewDate.getFullYear(), reviewDate.getMonth(), reviewDate.getDate());
-
-  const diffDays = Math.max(0, Math.floor((nowUtc - reviewUtc) / (1000 * 60 * 60 * 24)));
+  const diffMs = now - reviewDate;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffWeeks = Math.floor(diffDays / 7);
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
 
   if (diffDays === 0) return "Today";
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? "s" : ""} ago`;
+  if (diffDays < 30) return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
   if (diffDays < 365) return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
   return `${diffYears} year${diffYears > 1 ? "s" : ""} ago`;
 }
 
-
 const ReviewCard = ({ review }) => {
-  const user = review.user || {};
+  const userInfo = review.userInfoDTO || {};
   const fullName =
-    (user.firstName || "") + " " + (user.lastName || "");
+    (userInfo.firstName || "") + " " + (userInfo.lastName || "");
 
   const renderStars = (rating) => (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -105,19 +104,18 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
 
-  const fetchReviewsWithUsers = async () => {
+  const fetchReviews = async () => {
     setLoading(true);
     try {
       let url = `${API_URL}/reviews/court?courtId=${courtId}`;
       if (ratingFilter !== "all") {
         url += `&rating=${ratingFilter}`;
       }
-
       const response = await axios.get(url);
       const data = response.data?.data || [];
       setReviews(data);
     } catch (error) {
-      console.error("Error fetching reviews or users:", error);
+      console.error("Error fetching reviews:", error);
       setReviews([]);
     } finally {
       setLoading(false);
@@ -125,7 +123,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchReviewsWithUsers();
+    fetchReviews();
   }, [ratingFilter, courtId]);
 
   const FilterBar = () => (
