@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +72,7 @@ public class FavoriteSportCourtService {
         FavoriteSportCourtResponse favoriteSportCourtResponse = new FavoriteSportCourtResponse();
         List<SportCourtDTO> courtsDTOs = favoriteSportCourts.stream()
                 .map(FavoriteSportCourt::getSportCourt)
-                .map(sportCourtMapper::SportCourtToSportCourtDTO)
+                .map(sportCourtMapper::sportCourtToSportCourtDTO)
                 .toList();
 
         favoriteSportCourtResponse.setFavoriteSportCourts(courtsDTOs);

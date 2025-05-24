@@ -1,5 +1,6 @@
 package com.example.sportnavigator.DTO.review;
 
+import com.example.sportnavigator.DTO.user.UserInfoDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewDTO {
+
+    private Long id;
 
     @JsonProperty
     private String description;
@@ -29,4 +32,7 @@ public class ReviewDTO {
 
     @JsonProperty
     private Long sportCourtID;
+
+    @JsonProperty
+    private UserInfoDTO userInfoDTO;
 }

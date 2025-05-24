@@ -125,7 +125,7 @@ const Listings = () => {
                             </View>
                             <View style={{ flexDirection: 'row', gap: 4 }}>
                                 <Ionicons name={'star'} size={14} />
-                                <Text style={{ fontFamily: 'pop-sb', paddingHorizontal: 5 }}>0.0</Text>
+                                <Text style={{ fontFamily: 'pop-sb', paddingHorizontal: 5 }}>{item.ratingData.averageRating}</Text>
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', gap: 10 }}>
