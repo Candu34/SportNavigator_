@@ -1,5 +1,6 @@
 package com.example.sportnavigator.DTO.review;
 
+import com.example.sportnavigator.DTO.user.UserInfoDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,4 +32,7 @@ public class ReviewDTO {
 
     @JsonProperty
     private Long sportCourtID;
+
+    @JsonProperty
+    private UserInfoDTO userInfoDTO;
 }
