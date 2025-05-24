@@ -17,29 +17,29 @@ import { defaultStyles } from "@/constants/Styles";
 import avatarPlaceholder from "../../assets/images/avatar-people-person-svgrepo-com.png";
 import Colors from "@/constants/Colors";
 
-
-
-function formatReviewDate(dateStr: string) {
+function getRelativeTime(dateStr) {
   if (!dateStr) return "";
-  const reviewDate = new Date(dateStr);
   const now = new Date();
-  if (
-    reviewDate.getDate() === now.getDate() &&
-    reviewDate.getMonth() === now.getMonth() &&
-    reviewDate.getFullYear() === now.getFullYear()
-  ) {
-    return "Today";
-  }
-  return reviewDate.toLocaleDateString();
+  const reviewDate = new Date(dateStr);
+
+  const nowUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const reviewUtc = Date.UTC(reviewDate.getFullYear(), reviewDate.getMonth(), reviewDate.getDate());
+
+  const diffDays = Math.max(0, Math.floor((nowUtc - reviewUtc) / (1000 * 60 * 60 * 24)));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? "s" : ""} ago`;
+  if (diffDays < 365) return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
+  return `${diffYears} year${diffYears > 1 ? "s" : ""} ago`;
 }
+
 
 const ReviewCard = ({ review }) => {
   const user = review.user || {};
-  const hasImage = user.image && user.image.data && user.image.mime;
-  const imageUri = hasImage
-    ? `data:${user.image.mime};base64,${user.image.data}`
-    : null;
-
   const fullName =
     (user.firstName || "") + " " + (user.lastName || "");
 
@@ -62,11 +62,13 @@ const ReviewCard = ({ review }) => {
       ? review.description.slice(0, 70) + "..."
       : review.description;
 
+  const dateStr = review.createdAt;
+
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <Image
-          source={hasImage ? { uri: imageUri } : avatarPlaceholder}
+          source={avatarPlaceholder}
           style={styles.avatar}
         />
         <View style={{ flex: 1, marginLeft: 10 }}>
@@ -74,9 +76,11 @@ const ReviewCard = ({ review }) => {
             <Text style={styles.userName}>
               {fullName.trim() || "Unknown User"}
             </Text>
-            <Text style={styles.dateText}>
-              {formatReviewDate(review.creationDate)}
-            </Text>
+            {dateStr ? (
+              <Text style={styles.dateText}>
+                {getRelativeTime(dateStr)}
+              </Text>
+            ) : null}
           </View>
           {renderStars(review.rating)}
         </View>
@@ -108,32 +112,10 @@ const Page = () => {
       if (ratingFilter !== "all") {
         url += `&rating=${ratingFilter}`;
       }
-      // 1. Fetch reviews
+
       const response = await axios.get(url);
       const data = response.data?.data || [];
-
-      // 2. Collect unique userIDs
-      const userIds = [...new Set(data.map(r => r.userID))];
-
-      // 3. Fetch user info for each userID (in parallel)
-      const userFetches = userIds.map(id =>
-        axios.get(`${API_URL}/users/info/${id}`).then(res => ({ id, ...res.data }))
-      );
-      const userInfos = await Promise.all(userFetches);
-
-      // 4. Map user info by userID
-      const userMap = {};
-      userInfos.forEach(user => {
-        userMap[user.id] = user;
-      });
-
-      // 5. Attach user to each review
-      const reviewsWithUsers = data.map(review => ({
-        ...review,
-        user: userMap[review.userID] || {}, // fallback to empty object
-      }));
-
-      setReviews(reviewsWithUsers);
+      setReviews(data);
     } catch (error) {
       console.error("Error fetching reviews or users:", error);
       setReviews([]);
@@ -144,10 +126,8 @@ const Page = () => {
 
   useEffect(() => {
     fetchReviewsWithUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ratingFilter, courtId]);
 
-  // Modern horizontal filter bar
   const FilterBar = () => (
     <View style={styles.filterBar}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -284,7 +264,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 13,
     color: "#888",
-    marginLeft: 6,
+    marginLeft: 2,
     fontWeight: "400",
   },
   description: {
