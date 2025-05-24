@@ -3,6 +3,7 @@ package com.example.sportnavigator.Controllers;
 
 import com.example.sportnavigator.DTO.Auth.UserDTO;
 import com.example.sportnavigator.DTO.user.UserChangeNameRequestDto;
+import com.example.sportnavigator.DTO.user.UserInfoDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
 import com.example.sportnavigator.Service.UserService;
@@ -57,6 +58,13 @@ public class UserController {
         return userMapper.userToUserDTO(userService.getUserById(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/info/{id}")
+    @ResponseBody
+    public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable("id") long id) {
+        return ResponseEntity.ok(userMapper.userToUserInfoDTO(userService.getUserById(id)));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         userService.deleteUserByID(id);
@@ -73,4 +81,6 @@ public class UserController {
 
         return ResponseEntity.ok(userDto);
     }
+
+
 }
