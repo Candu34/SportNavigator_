@@ -221,7 +221,7 @@ const Page = () => {
           )}
   
           <Link
-          style={{ flexDirection: 'row', alignItems: 'center' }}
+          style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginLeft: 24 }}
           href={{
             pathname: "/(modals)/viewReviews",
             params: { id: id },
@@ -382,16 +382,17 @@ const styles = StyleSheet.create({
     fontFamily: 'pop-sb', 
     textDecorationLine: 'underline', 
     paddingLeft: 24, 
+    marginTop: 20,
   },
   buttonLink: {
 
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-    marginLeft: 24,
-  },
+ratingContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 100,
+  marginLeft: 24,
+},
   reviewText: {
     marginLeft: 5,
     fontSize: 14,

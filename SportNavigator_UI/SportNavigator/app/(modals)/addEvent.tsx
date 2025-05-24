@@ -114,10 +114,12 @@ const Page = () => {
                     <TextInput autoCapitalize='none' placeholder='Name'
                         style={[defaultStyles.inputField, { marginBottom: 15, fontFamily: 'pop' }]}
                         value={name}
+                        maxLength={15}
                         onChangeText={handleNameChange} />
                     <TextInput autoCapitalize='none' multiline={true}
                         numberOfLines={4}
                         placeholder='Description'
+                        maxLength={30}
                         value={description}
                         style={[defaultStyles.inputField, { marginBottom: 20, fontFamily: 'pop', height: 80 }]}
                         onChangeText={handleDescriptionChange} />

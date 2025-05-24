@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import Colors from '@/constants/Colors';
 
 export {
   ErrorBoundary,
@@ -117,7 +118,9 @@ function RootLayoutNav() {
       }} />
       <Stack.Screen name="(modals)/addEvent" options={{
         headerTitleStyle: {
-          fontFamily: 'pop-sb'
+          fontFamily: 'pop-sb',
+          fontSize: 24,
+          color: Colors.primary,
         },
         headerTitle: "Create event",
         headerTitleAlign: 'center',
@@ -130,7 +133,9 @@ function RootLayoutNav() {
       }} />
       <Stack.Screen name="(modals)/addReview" options={{
         headerTitleStyle: {
-          fontFamily: 'pop-sb'
+          fontFamily: 'pop-sb',
+          fontSize: 24,
+          color: Colors.primary,
         },
         headerTitle: "Leave an review",
         headerTitleAlign: 'center',
@@ -141,20 +146,29 @@ function RootLayoutNav() {
           </TouchableOpacity>
         )
       }} />
-       <Stack.Screen name="(modals)/viewReviews" options={{
-        headerTitleStyle: {
-          fontFamily: 'pop-sb'
-        },
-        presentation: 'fullScreenModal',
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="close-outline" size={28} />
-          </TouchableOpacity>
-        )
-      }} />
+       <Stack.Screen
+        name="(modals)/viewReviews"
+        options={{
+          headerTitle: "Reviews",
+          presentation: 'fullScreenModal',
+          headerTitleAlign: 'center', 
+          headerTitleStyle: {
+            fontFamily: 'pop-sb',
+            fontSize: 24, 
+            color: Colors.primary,
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <Stack.Screen name="(modals)/events" options={{
         headerTitleStyle: {
-          fontFamily: 'pop-sb'
+          fontFamily: 'pop-sb',
+          fontSize: 24,
+          color: Colors.primary,
         },
         headerTitle: "Upcoming events",
         headerTitleAlign: 'center',

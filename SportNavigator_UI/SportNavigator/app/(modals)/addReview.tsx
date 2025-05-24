@@ -103,6 +103,7 @@ const Page = () => {
         <View style={styles.container}>
         <TextInput autoCapitalize='none' multiline={true}
                                 numberOfLines={10}
+                                maxLength={100}
                                 placeholder='Description'
                                 value={description}
                                 style={[defaultStyles.inputField, { marginBottom: 30, fontFamily: 'pop', height: 110, borderRadius: 30 }]}
