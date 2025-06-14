@@ -17,6 +17,8 @@ const Page = () => {
     const [showDateTimePicker, setShowDateTimePicker] = useState(false);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [maxParticipants, setMaxParticipants] = useState('');
+
 
     const router = useRouter();
     const params = useLocalSearchParams();
@@ -49,6 +51,10 @@ const Page = () => {
             Alert.alert('Error', 'Please fill in all fields and select a date');
             return;
         }
+        if (isNaN(Number(maxParticipants)) || Number(maxParticipants) <= 0) {
+            Alert.alert('Error', 'Max participants must be a positive number');
+            return;
+        }
         setLoading(true);
 
         const eventDTO = {
@@ -57,6 +63,7 @@ const Page = () => {
             sportCourtID: courtId,
             userId: userId,
             event_time: date,
+            maxParticipants: parseInt(maxParticipants, 10),
         };
 
         try {
@@ -123,6 +130,12 @@ const Page = () => {
                         value={description}
                         style={[defaultStyles.inputField, { marginBottom: 20, fontFamily: 'pop', height: 80 }]}
                         onChangeText={handleDescriptionChange} />
+                        <TextInput
+                        keyboardType="number-pad"
+                        placeholder="Max participants"
+                        value={maxParticipants}
+                        onChangeText={setMaxParticipants}
+                        style={[defaultStyles.inputField, { marginBottom: 15, fontFamily: 'pop' }]}/>
                     <TouchableOpacity onPress={handleOnPressDateTime} style={[defaultStyles.btn, { flexDirection: 'row', gap: 20 }]}>
                         <MaterialCommunityIcons name="timetable" size={24} color="white" />
                         <Text style={defaultStyles.btnText}>Select date and time</Text>
