@@ -2,15 +2,16 @@ package com.example.sportnavigator.Models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "events")
@@ -41,6 +42,17 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private LocalDateTime created_at;
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    Set<User> participants = new HashSet<>();
+
+    @Column(name = "max_participants")
+    private Integer maxParticipants;
 
     @PrePersist
     private void init(){
