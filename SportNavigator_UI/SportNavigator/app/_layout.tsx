@@ -179,6 +179,22 @@ function RootLayoutNav() {
           </TouchableOpacity>
         )
       }} />
+
+       <Stack.Screen name="(modals)/event/[id]" options={{
+        headerTitleStyle: {
+          fontFamily: 'pop-sb',
+          fontSize: 24,
+          color: Colors.primary,
+        },
+        headerTitle: "",
+        headerTitleAlign: 'center',
+        presentation: 'fullScreenModal',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="close-outline" size={28} />
+          </TouchableOpacity>
+        )
+      }} />
     </Stack>
   );
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class EventMapper {
         event.setSportCourt(sportCourt);
         event.setUser(user);
         event.setEvent_time(LocalDateTime.parse(eventDTO.getEvent_time(), formatter));
-
+        event.setMaxParticipants(eventDTO.getMaxParticipants());
         return event;
     }
 
@@ -41,7 +42,14 @@ public class EventMapper {
         eventDTO.setSportCourtID(event.getSportCourt().getId());
         eventDTO.setEvent_time(event.getEvent_time().toString());
         eventDTO.setUserId(event.getUser().getId());
-
+        eventDTO.setMaxParticipants(event.getMaxParticipants());
+        eventDTO.setParticipants(event.getParticipants().size());
+        eventDTO.setCreated_at(event.getCreated_at().toString());
+        eventDTO.setParticipantsIds(
+                event.getParticipants().stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList())
+        );
         return eventDTO;
     }
 }

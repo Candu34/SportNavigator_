@@ -3,13 +3,15 @@ package com.example.sportnavigator.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.util.List;
+
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class EventDTO {
 
     @JsonProperty
@@ -36,6 +38,16 @@ public class EventDTO {
     @NotNull
     private String event_time;
 
+    @JsonProperty
+    private int maxParticipants;
+
+    @JsonProperty
+    private int participants;
+
+    @JsonProperty
+    private String created_at;
+
+    private List<Long> participantsIds;
 
 
 }

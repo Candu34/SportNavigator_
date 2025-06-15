@@ -6,9 +6,7 @@ import com.example.sportnavigator.Models.Enums.Sport;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "courts")
@@ -65,10 +64,6 @@ public class SportCourt {
 
     @OneToMany(mappedBy = "sportCourt")
     private Set<FavoriteSportCourt> usersSetToFavorite;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            mappedBy = "sportCourt")
-    private List<Event> events;
 
     @PrePersist
     private void init() {
