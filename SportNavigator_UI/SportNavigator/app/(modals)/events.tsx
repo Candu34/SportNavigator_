@@ -2,7 +2,7 @@ import { View, FlatList, ListRenderItem, ActivityIndicator, Text } from 'react-n
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import React, { useState, useCallback } from 'react';
 import { defaultStyles } from "@/constants/Styles";
-import { ListItem } from "@/components/ExpandListItem";
+import { ListItem } from "@/components/ListItem";
 import axios from 'axios';
 import { API_URL } from "@/constants/api_url";
 
@@ -73,7 +73,7 @@ const Page = () => {
 
     const renderRow: ListRenderItem<any> = ({ item }) => {
         return (
-            <ListItem item={item} />
+           <ListItem item={item} />
         );
     };
 
