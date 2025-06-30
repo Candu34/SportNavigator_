@@ -1,205 +1,273 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  TextInput,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
-import * as SecureStore from 'expo-secure-store';
+
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Image } from "react-native";
+import { API_URL } from "@/constants/api_url";
+import AppLoader from "@/components/AppLoader";
+
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Ionicons } from "@expo/vector-icons";
-import { TextInput } from "react-native";
 
-
-const Page = () => {
-    const router = useRouter();
-    const { onLogout } = useAuth();
-    const [user, setUser] = useState(null);
-    const [editing, setEditing] = useState(false);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userData = await SecureStore.getItemAsync('user');
-                if (!userData) {
-                    throw new Error("User not found in storage");
-                }
-
-                const user = JSON.parse(userData);
-                if (!user.id) {
-                    throw new Error("Invalid user data");
-                }
-
-                setUser(user);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    const handleLogOut = async () => {
-        const result = await onLogout();
-        router.replace('/screens/start_page');
-    };
-
-    const onSaveUser = async () => {
-        setEditing(false);
-    };
-
-    const onPickImage = async () => {
-        // Pick image logic here
-    };
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Text style={styles.header}>Profile</Text>
-                <TouchableOpacity onPress={handleLogOut}>
-                    <MaterialIcons name="logout" size={24} color="black" style={defaultStyles.btnIcon} />
-                </TouchableOpacity>
-            </View>
-            {user && (
-                <View style={styles.card}>
-                    <TouchableOpacity>
-                    {user.image ? (
-                        <Image 
-                            source={{ uri: `data:${user.image.mime};base64,${user.image.data}` }} 
-                            style={styles.avatar} 
-                        />
-                    ) : (
-                        <Image 
-                            source={require(`../../assets/images/athlete_primary.png`)} 
-                            style={styles.avatar} 
-                        />
-                    )}
-                    </TouchableOpacity>
-                    <View>
-                        {editing ? (
-                            <View style={styles.editColumn}>
-                                <TextInput placeholder="First name" style={defaultStyles.inputField, {width: 200, fontSize: 20}}
-                                    value={user.firstName}
-                                    onChangeText={setFirstName} >
-                                </TextInput>
-                                <TextInput placeholder="Last name" style={defaultStyles.inputField, {width: 200, fontSize: 20}}
-                                    value={user.lastName}
-                                    onChangeText={setLastName} >
-                                </TextInput>
-                               <TouchableOpacity onPress={onSaveUser}>
-                                    <Ionicons name="checkmark-outline" size={30} color="orange"/>
-                               </TouchableOpacity>
-                            </View>
-                        ) : (
-                            <View style={styles.editRow}>
-                                <Text style={{fontFamily: 'pop-b', fontSize: 20}}>
-                                    {user.firstName} {user.lastName}
-                                </Text>
-                                <TouchableOpacity onPress={() => setEditing(true)}>
-                                    <Ionicons name="create-outline" size={24} color="black" style={defaultStyles.btnIcon} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    </View>
-                    <View style={{flexDirection: 'column', alignItems: 'center', gap: 10}}>
-                        <Text style={{fontFamily: 'pop-sb', fontSize: 16}}>
-                            Email: {user.email}
-                        </Text>
-                        <Text style={{fontFamily: 'pop-sb', fontSize: 16}}>
-                            Science: {user.science}
-                        </Text>
-                    </View>
-                </View>
-            )}
-        </SafeAreaView>
-    );
+type EncodedImage = {
+  mime: string;
+  data: string;
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    seperatorView: {
-        flexDirection: 'row',
-        gap: 10,
-        alignItems: 'center',
-        marginVertical: 30,
-    },
-    separator: {
-        fontFamily: 'pop-sb',
-        color: Colors.grey,
-        marginLeft: 5,
-        marginRight: 5,
-    },
-    btnOutline: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: Colors.grey,
-        height: 50,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-    },
-    btnOutlineText: {
-        color: '#000',
-        fontSize: 16,
-        fontFamily: 'pop-sb',
-    },
-    headerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 24,
-    },
-    header: {
-        fontFamily: 'pop-b',
-        fontSize: 40,
-        color: Colors.primary, 
-    },
-    card: {
-        backgroundColor: '#fff',
-        padding: 24,
-        borderRadius: 16,
-        marginHorizontal: 24,
-        marginTop: 24,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        shadowOffset: {
-            width: 1,
-            height: 2,
-        },
-        alignItems: 'center',
-        gap: 14,
-        marginBottom: 24,
-    },
-    avatar:{
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        backgroundColor: Colors.grey,
-    },
-    editRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 15,
-    },
-    editColumn: {
-        flexDirection: 'column',
-        width: 200,
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        alignItems: 'center',
-        gap: 20,
-    }
-});
+type UserDTO = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  science: string;
+  image?: EncodedImage;
+};
 
-export default Page;
+export default function ProfilePage() {
+  const router = useRouter();
+  const { onLogout } = useAuth();
+
+  const [user, setUser] = useState<UserDTO | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [editing, setEditing] = useState(false);
+
+  const [newImage, setNewImage] = useState<EncodedImage | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Load current user from SecureStore
+  useEffect(() => {
+    (async () => {
+      try {
+        const stored = await SecureStore.getItemAsync("user");
+        if (!stored) throw new Error("User not found");
+        const u: UserDTO = JSON.parse(stored);
+        setUser(u);
+        setFirstName(u.firstName);
+        setLastName(u.lastName);
+      } catch (err: any) {
+        console.error(err);
+        Alert.alert("Error", err.message);
+      }
+    })();
+  }, []);
+
+  const handleLogOut = async () => {
+    await onLogout();
+    router.replace("/screens/start_page");
+  };
+
+  // Cancel name edits: revert inputs and close form
+  const onCancelEdit = () => {
+    if (user) {
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+    }
+    setEditing(false);
+  };
+
+  // Pick a new avatar, store its base64 + mime, preview immediately
+  const onPickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      return Alert.alert("Error", "Media library permission denied");
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.5,
+      base64: true,
+    });
+    if (result.canceled) return;
+    const asset = result.assets[0];
+    const ext = asset.uri.split(".").pop() || "jpg";
+    const enc: EncodedImage = { mime: `image/${ext}`, data: asset.base64! };
+    setNewImage(enc);
+    setUser((u) => u && ({ ...u, image: enc }));
+  };
+
+  // Send single PATCH with name + optional image
+  const onSaveChanges = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    try {
+      const payload = {
+        id: user.id,
+        firstName,
+        lastName,
+        image: newImage, // may be null
+      };
+      const resp = await axios.patch<UserDTO>(
+        `${API_URL}/users/update/${user.id}`,
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const updated = resp.data;
+      setUser(updated);
+      await SecureStore.setItemAsync("user", JSON.stringify(updated));
+      setNewImage(null);
+      setEditing(false);
+      Alert.alert("Success", "Profile updated");
+    } catch (err: any) {
+      console.error(err);
+      Alert.alert("Error", err.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Determine if anything has changed
+  const isNameDirty =
+    !!user && (firstName !== user.firstName || lastName !== user.lastName);
+  const isImageDirty = newImage !== null;
+  const isDirty = isNameDirty || isImageDirty;
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Profile</Text>
+        <TouchableOpacity onPress={handleLogOut}>
+          <MaterialIcons
+            name="logout"
+            size={24}
+            color="black"
+            style={defaultStyles.btnIcon}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {user && (
+        <View style={styles.card}>
+          {/* Avatar */}
+          <TouchableOpacity onPress={onPickImage}>
+            <Image
+              source={
+                user.image
+                  ? {
+                      uri: `data:${user.image.mime};base64,${user.image.data}`,
+                    }
+                  : require("../../assets/images/athlete_primary.png")
+              }
+              style={styles.avatar}
+            />
+            <MaterialIcons
+              name="camera-alt"
+              size={24}
+              color="white"
+              style={styles.cameraIcon}
+            />
+          </TouchableOpacity>
+
+          {/* Name */}
+          {editing ? (
+            <View style={styles.editColumn}>
+              <TextInput
+                style={[defaultStyles.inputField, styles.nameInput]}
+                value={firstName}
+                onChangeText={setFirstName}
+                placeholder="First Name"
+              />
+              <TextInput
+                style={[defaultStyles.inputField, styles.nameInput]}
+                value={lastName}
+                onChangeText={setLastName}
+                placeholder="Last Name"
+              />
+              {/* X button to dismiss/undo */}
+              <TouchableOpacity onPress={onCancelEdit}>
+                <Ionicons name="close-outline" size={30} color="red" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.editRow}>
+              <Text style={styles.nameText}>
+                {user.firstName} {user.lastName}
+              </Text>
+              <TouchableOpacity onPress={() => setEditing(true)}>
+                <Ionicons
+                  name="create-outline"
+                  size={24}
+                  color="black"
+                  style={defaultStyles.btnIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Other info */}
+          <Text style={styles.infoText}>Email: {user.email}</Text>
+          <Text style={styles.infoText}>Science: {user.science}</Text>
+
+          {/* Save Changes */}
+          {isDirty && (
+            <View style={styles.buttonView}>
+              <TouchableOpacity
+                style={defaultStyles.btn}
+                onPress={onSaveChanges}
+              >
+                <Text style={defaultStyles.btnText}>Save Changes</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      )}
+
+      {loading && <AppLoader />}
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#fff" },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 24,
+  },
+  header: { fontFamily: "pop-b", fontSize: 40, color: Colors.primary },
+  card: {
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 16,
+    marginHorizontal: 24,
+    marginTop: 24,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 1, height: 2 },
+    alignItems: "center",
+    gap: 14,
+  },
+  avatar: { width: 150, height: 150, borderRadius: 75, backgroundColor: Colors.grey },
+  cameraIcon: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    padding: 4,
+  },
+  editRow: { flexDirection: "row", alignItems: "center", gap: 15 },
+  editColumn: { alignItems: "center", gap: 20 },
+  nameInput: { width: 200, fontSize: 20 },
+  nameText: { fontFamily: "pop-b", fontSize: 20 },
+  infoText: { fontFamily: "pop-sb", fontSize: 16, marginTop: 8 },
+  buttonView: { width: "50%", alignSelf: "center", marginTop: 20 },
+});
