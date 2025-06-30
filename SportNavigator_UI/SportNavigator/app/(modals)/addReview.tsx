@@ -11,6 +11,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { Alert } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Colors from "@/constants/Colors";
+import AppLoader from "@/components/AppLoader";
 
 
 const Page = () => {
@@ -103,7 +104,7 @@ const Page = () => {
         <View style={styles.container}>
         <TextInput autoCapitalize='none' multiline={true}
                                 numberOfLines={10}
-                                maxLength={100}
+                                maxLength={200}
                                 placeholder='Description'
                                 value={description}
                                 style={[defaultStyles.inputField, { marginBottom: 30, fontFamily: 'pop', height: 110, borderRadius: 30 }]}
@@ -127,6 +128,7 @@ const Page = () => {
         </TouchableOpacity>
         {error && <Text style={styles.errorText}>{errorMsg}</Text>}
       </View>
+      {loading && <AppLoader />}
         </>
 )}
 

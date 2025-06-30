@@ -91,7 +91,7 @@ const selectCategory = (index: number) => {
                                     <MaterialCommunityIcons
                                         name={item.icon as any}
                                         size={24}
-                                        color={activeIndex === index ? '#000' : Colors.grey}
+                                        color={activeIndex === index ? Colors.primary : Colors.grey}
                                     />
                                     <Text style={activeIndex === index ? styles.categoryTextActive : styles.categoryText}>
                                         {item.name}
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     categoryTextActive: {
         fontSize: 14,
         fontFamily: 'pop-sb',
-        color: '#000',
+        color: Colors.primary,
     },
     categoriesBtn: {
         flex: 1, 
