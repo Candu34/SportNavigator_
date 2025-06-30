@@ -2,7 +2,7 @@ package com.example.sportnavigator.Controllers;
 
 
 import com.example.sportnavigator.DTO.Auth.UserDTO;
-import com.example.sportnavigator.DTO.user.UserChangeNameRequestDto;
+import com.example.sportnavigator.DTO.user.UserChangeRequestDto;
 import com.example.sportnavigator.DTO.user.UserInfoDTO;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.User;
@@ -72,15 +72,17 @@ public class UserController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/change-name/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id,
-                                             @RequestBody @Valid UserChangeNameRequestDto requestDto,
+                                             @RequestBody @Valid UserChangeRequestDto requestDto,
                                              BindingResult bindingResult) {
 
-        UserDTO userDto = userMapper.userToUserDTO(userService.updateUser(requestDto, bindingResult));
+        User user = userService.updateUser(requestDto, bindingResult);
+        UserDTO userDto = userMapper.userToUserDTO(user);
 
         return ResponseEntity.ok(userDto);
     }
+
 
 
 }

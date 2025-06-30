@@ -2,17 +2,19 @@ package com.example.sportnavigator.Service;
 
 import com.example.sportnavigator.DTO.Auth.RegisterUserDTO;
 import com.example.sportnavigator.DTO.Auth.UserDTO;
-import com.example.sportnavigator.DTO.user.UserChangeNameRequestDto;
+import com.example.sportnavigator.DTO.user.UserChangeRequestDto;
 import com.example.sportnavigator.Mapper.UserMapper;
 import com.example.sportnavigator.Models.Enums.RoleEnum;
 import com.example.sportnavigator.Models.Authentification.Role;
 import com.example.sportnavigator.Models.User;
+import com.example.sportnavigator.Models.UserImage;
 import com.example.sportnavigator.Repository.RoleRepository;
 import com.example.sportnavigator.Repository.UserRepository;
 import com.example.sportnavigator.Utils.Excetions.UserExistingEmailException;
 import com.example.sportnavigator.Utils.Excetions.UserNotCreatedException;
 import com.example.sportnavigator.Utils.Excetions.UserNotFoundException;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -99,7 +102,7 @@ public class UserService {
         }
     }
 
-    public User updateUser(UserChangeNameRequestDto requestDto, BindingResult bindingResult){
+    public User updateUser(UserChangeRequestDto requestDto, BindingResult bindingResult){
         Optional<User> userOptional = userRepository.findById(requestDto.id());
 
         if (userOptional.isEmpty()) {
@@ -118,6 +121,16 @@ public class UserService {
         User user = userOptional.get();
         user.setFirstName(requestDto.firstName());
         user.setLastName(requestDto.lastName());
+
+        if (requestDto.image() != null) {
+            UserImage userImage = new UserImage();
+            userImage.setMime(requestDto.image().getMime());
+            byte[] data = Base64.decodeBase64(requestDto.image().getData());
+            userImage.setBytes(data);
+            userImage.setUser(user);
+            user.setImage(userImage);
+        }
+
         return userRepository.save(user);
     }
 
@@ -159,6 +172,5 @@ public class UserService {
 
         return user.get();
     }
-
 
 }
