@@ -42,6 +42,8 @@ export default function ProfilePage() {
   const { onLogout } = useAuth();
 
   const [user, setUser] = useState<UserDTO | null>(null);
+  const [originalImage, setOriginalImage] = useState<EncodedImage | null>(null);
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [editing, setEditing] = useState(false);
@@ -49,7 +51,6 @@ export default function ProfilePage() {
   const [newImage, setNewImage] = useState<EncodedImage | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Load current user from SecureStore
   useEffect(() => {
     (async () => {
       try {
@@ -57,6 +58,7 @@ export default function ProfilePage() {
         if (!stored) throw new Error("User not found");
         const u: UserDTO = JSON.parse(stored);
         setUser(u);
+        setOriginalImage(u.image ?? null);
         setFirstName(u.firstName);
         setLastName(u.lastName);
       } catch (err: any) {
@@ -71,7 +73,6 @@ export default function ProfilePage() {
     router.replace("/screens/start_page");
   };
 
-  // Cancel name edits: revert inputs and close form
   const onCancelEdit = () => {
     if (user) {
       setFirstName(user.firstName);
@@ -80,7 +81,19 @@ export default function ProfilePage() {
     setEditing(false);
   };
 
-  // Pick a new avatar, store its base64 + mime, preview immediately
+  const onCancelImage = () => {
+    setNewImage(null);
+    setUser((u) =>
+      u
+        ? {
+            ...u,
+            image: originalImage ?? undefined,
+          }
+        : u
+    );
+  };
+
+  // Pick a new avatar, preview immediately
   const onPickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -92,18 +105,17 @@ export default function ProfilePage() {
       base64: true,
     });
     if (result.canceled) return;
+
     const asset = result.assets[0];
     const ext = asset.uri.split(".").pop() || "jpg";
     const enc: EncodedImage = { mime: `image/${ext}`, data: asset.base64! };
     setNewImage(enc);
-    setUser((u) => u && ({ ...u, image: enc }));
+    setUser((u) => (u ? { ...u, image: enc } : u));
   };
 
-  // Send single PATCH with name + optional image
   const onSaveChanges = async () => {
     if (!user) return;
     setLoading(true);
-
     try {
       const payload = {
         id: user.id,
@@ -119,6 +131,7 @@ export default function ProfilePage() {
       const updated = resp.data;
       setUser(updated);
       await SecureStore.setItemAsync("user", JSON.stringify(updated));
+      setOriginalImage(updated.image ?? null);
       setNewImage(null);
       setEditing(false);
       Alert.alert("Success", "Profile updated");
@@ -130,7 +143,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Determine if anything has changed
   const isNameDirty =
     !!user && (firstName !== user.firstName || lastName !== user.lastName);
   const isImageDirty = newImage !== null;
@@ -138,7 +150,6 @@ export default function ProfilePage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Profile</Text>
         <TouchableOpacity onPress={handleLogOut}>
@@ -153,27 +164,36 @@ export default function ProfilePage() {
 
       {user && (
         <View style={styles.card}>
-          {/* Avatar */}
-          <TouchableOpacity onPress={onPickImage}>
-            <Image
-              source={
-                user.image
-                  ? {
-                      uri: `data:${user.image.mime};base64,${user.image.data}`,
-                    }
-                  : require("../../assets/images/athlete_primary.png")
-              }
-              style={styles.avatar}
-            />
-            <MaterialIcons
-              name="camera-alt"
-              size={24}
-              color="white"
-              style={styles.cameraIcon}
-            />
-          </TouchableOpacity>
+          <View style={styles.avatarContainer}>
+            <TouchableOpacity onPress={onPickImage}>
+              <Image
+                source={
+                  user.image
+                    ? {
+                        uri: `data:${user.image.mime};base64,${user.image.data}`,
+                      }
+                    : require("../../assets/images/athlete_primary.png")
+                }
+                style={styles.avatar}
+              />
+              <MaterialIcons
+                name="camera-alt"
+                size={24}
+                color="white"
+                style={styles.cameraIcon}
+              />
+            </TouchableOpacity>
 
-          {/* Name */}
+            {newImage && (
+              <TouchableOpacity
+                style={styles.imageCancelIcon}
+                onPress={onCancelImage}
+              >
+                <Ionicons name="close-outline" size={28} color="red" />
+              </TouchableOpacity>
+            )}
+          </View>
+
           {editing ? (
             <View style={styles.editColumn}>
               <TextInput
@@ -188,7 +208,6 @@ export default function ProfilePage() {
                 onChangeText={setLastName}
                 placeholder="Last Name"
               />
-              {/* X button to dismiss/undo */}
               <TouchableOpacity onPress={onCancelEdit}>
                 <Ionicons name="close-outline" size={30} color="red" />
               </TouchableOpacity>
@@ -209,11 +228,9 @@ export default function ProfilePage() {
             </View>
           )}
 
-          {/* Other info */}
           <Text style={styles.infoText}>Email: {user.email}</Text>
           <Text style={styles.infoText}>Science: {user.science}</Text>
 
-          {/* Save Changes */}
           {isDirty && (
             <View style={styles.buttonView}>
               <TouchableOpacity
@@ -241,6 +258,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   header: { fontFamily: "pop-b", fontSize: 40, color: Colors.primary },
+
   card: {
     backgroundColor: "#fff",
     padding: 24,
@@ -255,6 +273,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
   },
+
+  avatarContainer: {
+    position: "relative",
+  },
   avatar: { width: 150, height: 150, borderRadius: 75, backgroundColor: Colors.grey },
   cameraIcon: {
     position: "absolute",
@@ -264,10 +286,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
   },
+  imageCancelIcon: {
+    position: "absolute",
+    top: -6,
+    right: -6,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 2,
+  },
+
   editRow: { flexDirection: "row", alignItems: "center", gap: 15 },
   editColumn: { alignItems: "center", gap: 20 },
   nameInput: { width: 200, fontSize: 20 },
   nameText: { fontFamily: "pop-b", fontSize: 20 },
   infoText: { fontFamily: "pop-sb", fontSize: 16, marginTop: 8 },
+
   buttonView: { width: "50%", alignSelf: "center", marginTop: 20 },
 });
